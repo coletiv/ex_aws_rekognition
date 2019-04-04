@@ -1,0 +1,1 @@
+# ex_aws_rekognition

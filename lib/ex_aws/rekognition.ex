@@ -11,13 +11,15 @@ defmodule ExAws.Rekognition do
     create_collection: :post,
     delete_collection: :post,
     describe_collection: :post,
+    list_collections: :post,
     detect_text: :post
   }
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_CompareFaces.html
   """
-  def compare_faces(similarity_threshold, source_image, target_image) do
+  def compare_faces(similarity_threshold, source_image, target_image)
+      when is_number(similarity_threshold) do
     request(:compare_faces, %{
       "SimilarityThreshold" => similarity_threshold,
       "SourceImage" => map_image(source_image),
@@ -41,7 +43,7 @@ defmodule ExAws.Rekognition do
   NOTE: When using an S3Object, you may need to insure that
   the S3 uses the same region as Rekognition
   """
-  def detect_faces(attributes, image) when is_list(attributes) do
+  def detect_faces(attributes \\ ["DEFAULT"], image) when is_list(attributes) do
     request(:detect_faces, %{
       "Attributes" => attributes,
       "Image" => map_image(image)
@@ -72,6 +74,17 @@ defmodule ExAws.Rekognition do
   def describe_collection(collection_id) when is_binary(collection_id) do
     request(:delete_collection, %{
       "CollectionId" => collection_id
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html
+  """
+  def list_collections(max_results, next_token)
+      when is_integer(max_results) and is_binary(next_token) do
+    request(:list_collections, %{
+      "MaxResults" => max_results,
+      "NextToken" => next_token
     })
   end
 

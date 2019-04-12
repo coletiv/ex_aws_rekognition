@@ -14,7 +14,9 @@ defmodule ExAws.Rekognition do
     detect_text: :post
   }
 
-  # https://docs.aws.amazon.com/rekognition/latest/dg/API_CompareFaces.html
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_CompareFaces.html
+  """
   def compare_faces(similarity_threshold, source_image, target_image) do
     request(:compare_faces, %{
       "SimilarityThreshold" => similarity_threshold,
@@ -23,7 +25,9 @@ defmodule ExAws.Rekognition do
     })
   end
 
-  # https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteFaces.html
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteFaces.html
+  """
   def delete_faces(collection_id, face_ids) when is_binary(collection_id) and is_list(face_ids) do
     request(:delete_collection, %{
       "CollectionId" => collection_id,
@@ -31,7 +35,12 @@ defmodule ExAws.Rekognition do
     })
   end
 
-  # https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectFaces.html
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectFaces.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
+  """
   def detect_faces(attributes, image) when is_list(attributes) do
     request(:detect_faces, %{
       "Attributes" => attributes,
@@ -39,27 +48,39 @@ defmodule ExAws.Rekognition do
     })
   end
 
-  # https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateCollection.html
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateCollection.html
+  """
   def create_collection(collection_id) when is_binary(collection_id) do
     request(:create_collection, %{
       "CollectionId" => collection_id
     })
   end
 
-  # https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteCollection.html
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteCollection.html
+  """
   def delete_collection(collection_id) when is_binary(collection_id) do
     request(:delete_collection, %{
       "CollectionId" => collection_id
     })
   end
 
-  # https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeCollection.html
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeCollection.html
+  """
   def describe_collection(collection_id) when is_binary(collection_id) do
     request(:delete_collection, %{
       "CollectionId" => collection_id
     })
   end
 
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectText.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
+  """
   def detect_text(image) do
     request(:detect_text, %{
       "Image" => map_image(image)

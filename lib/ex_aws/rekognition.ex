@@ -21,7 +21,7 @@ defmodule ExAws.Rekognition do
   @spec compare_faces(number(), binary() | S3Object.t(), binary() | S3Object.t()) :: %{
           optional(any) => any
         }
-  def compare_faces(similarity_threshold, source_image, target_image)
+  def compare_faces(similarity_threshold \\ 0.8, source_image, target_image)
       when is_number(similarity_threshold) do
     request(:compare_faces, %{
       "SimilarityThreshold" => similarity_threshold,

@@ -47,8 +47,8 @@ defmodule ExAws.Rekognition do
   NOTE: When using an S3Object, you may need to insure that
   the S3 uses the same region as Rekognition
   """
-  @spec detect_faces(maybe_improper_list(), binary() | S3Object.t()) :: %{optional(any) => any}
-  def detect_faces(attributes \\ ["DEFAULT"], image) when is_list(attributes) do
+  @spec detect_faces(binary() | S3Object.t(), maybe_improper_list()) :: %{optional(any) => any}
+  def detect_faces(image, attributes \\ ["DEFAULT"]) when is_list(attributes) do
     request(:detect_faces, %{
       "Attributes" => attributes,
       "Image" => map_image(image)

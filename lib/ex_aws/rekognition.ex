@@ -85,28 +85,29 @@ defmodule ExAws.Rekognition do
     })
   end
 
-  def list_collections(next_token \\ nil, max_results \\ nil)
-
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html
+  """
+  @spec list_collections(nil, nil) :: %{optional(any) => any}
   def list_collections(nil, nil) do
     request(:list_collections, %{})
   end
 
-  def list_collections(next_token, nil) do
+  @spec list_collections(binary(), nil) :: %{optional(any) => any}
+  def list_collections(next_token, nil) when is_binary(next_token) do
     request(:list_collections, %{
       "NextToken" => next_token
     })
   end
 
-  def list_collections(nil, max_results) do
+  @spec list_collections(nil, integer()) :: %{optional(any) => any}
+  def list_collections(nil, max_results) when is_integer(max_results) do
     request(:list_collections, %{
       "MaxResults" => max_results
     })
   end
 
-  @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html
-  """
-  @spec list_collections(integer(), binary()) :: %{optional(any) => any}
+  @spec list_collections(binary(), integer()) :: %{optional(any) => any}
   def list_collections(next_token, max_results)
       when is_binary(next_token) and is_integer(max_results) do
     request(:list_collections, %{

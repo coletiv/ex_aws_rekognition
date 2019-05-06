@@ -3,7 +3,7 @@ defmodule ExAws.Rekognition.MixProject do
 
   @version "0.1.0"
   @service "rekognition"
-  @url "https://github.com/ex-aws/ex_aws_#{@service}"
+  @url "https://github.com/coletiv/ex_aws_#{@service}"
   @name __MODULE__ |> Module.split() |> Enum.take(2) |> Enum.join(".")
 
   def project do

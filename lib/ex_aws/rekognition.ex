@@ -2,7 +2,7 @@ defmodule ExAws.Rekognition do
   @moduledoc """
   Operations on ExAws Rekognition
   """
-  alias S3Object
+  alias ExAws.Rekognition.S3Object
 
   @actions %{
     compare_faces: :post,
@@ -18,10 +18,10 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_CompareFaces.html
   """
-  @spec compare_faces(number(), binary() | S3Object.t(), binary() | S3Object.t()) :: %{
+  @spec compare_faces(binary() | S3Object.t(), binary() | S3Object.t(), number()) :: %{
           optional(any) => any
         }
-  def compare_faces(similarity_threshold \\ 0.8, source_image, target_image)
+  def compare_faces(source_image, target_image, similarity_threshold \\ 0.8)
       when is_number(similarity_threshold) do
     request(:compare_faces, %{
       "SimilarityThreshold" => similarity_threshold,
@@ -85,12 +85,30 @@ defmodule ExAws.Rekognition do
     })
   end
 
+  def list_collections(next_token \\ nil, max_results \\ nil)
+
+  def list_collections(nil, nil) do
+    request(:list_collections, %{})
+  end
+
+  def list_collections(next_token, nil) do
+    request(:list_collections, %{
+      "NextToken" => next_token
+    })
+  end
+
+  def list_collections(nil, max_results) do
+    request(:list_collections, %{
+      "MaxResults" => max_results
+    })
+  end
+
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html
   """
   @spec list_collections(integer(), binary()) :: %{optional(any) => any}
-  def list_collections(max_results, next_token)
-      when is_integer(max_results) and is_binary(next_token) do
+  def list_collections(next_token, max_results)
+      when is_binary(next_token) and is_integer(max_results) do
     request(:list_collections, %{
       "MaxResults" => max_results,
       "NextToken" => next_token

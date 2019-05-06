@@ -2,7 +2,7 @@ defmodule ExAws.RekognitionTest do
   use ExUnit.Case, async: true
   doctest ExAws.Rekognition
 
-  alias S3Object
+  alias ExAws.Rekognition.S3Object
 
   test "compare faces - image" do
     similarity_threshold = 0.0
@@ -11,9 +11,9 @@ defmodule ExAws.RekognitionTest do
 
     assert {:ok, %{"FaceMatches" => _}} =
              ExAws.Rekognition.compare_faces(
-               similarity_threshold,
                source_image_binary,
-               target_image_binary
+               target_image_binary,
+               similarity_threshold
              )
              |> ExAws.request()
   end

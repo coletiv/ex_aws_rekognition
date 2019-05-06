@@ -111,8 +111,8 @@ defmodule ExAws.Rekognition do
   def list_collections(next_token, max_results)
       when is_binary(next_token) and is_integer(max_results) do
     request(:list_collections, %{
-      "MaxResults" => max_results,
-      "NextToken" => next_token
+      "NextToken" => next_token,
+      "MaxResults" => max_results
     })
   end
 

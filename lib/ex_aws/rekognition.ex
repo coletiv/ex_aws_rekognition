@@ -4,15 +4,42 @@ defmodule ExAws.Rekognition do
   """
   alias ExAws.Rekognition.S3Object
 
+  # https://docs.aws.amazon.com/rekognition/latest/dg/API_Operations.html
   @actions %{
     compare_faces: :post,
-    delete_faces: :post,
-    detect_faces: :post,
     create_collection: :post,
+    # create_stream_processor: :post,
     delete_collection: :post,
+    delete_faces: :post,
+    # delete_stream_processor: :post,
     describe_collection: :post,
-    list_collections: :post,
-    detect_text: :post
+    # describe_stream_processor: :post,
+    detect_faces: :post,
+    # detect_labels: :post,
+    # detect_moderation_labels: :post,
+    detect_text: :post,
+    # get_celebrity_info: :post,
+    # get_celebrity_recognition: :post,
+    # get_content_moderation: :post,
+    # get_face_detection: :post,
+    # get_face_search: :post,
+    # get_label_detection: :post,
+    # get_person_tracking: :post,
+    # index_faces: :post,
+    list_collections: :post
+    # list_faces: :post,
+    # list_stream_processors: :post,
+    # recognize_celebrities: :post,
+    # search_faces: :post,
+    # search_faces_by_image: :post,
+    # start_celebrity_recognition: :post,
+    # start_content_moderation: :post,
+    # start_face_detection: :post,
+    # start_face_search: :post,
+    # start_label_detection: :post,
+    # start_person_tracking: :post,
+    # start_stream_processor: :post,
+    # stop_stream_processor: :post
   }
 
   @doc """
@@ -27,31 +54,6 @@ defmodule ExAws.Rekognition do
       "SimilarityThreshold" => similarity_threshold,
       "SourceImage" => map_image(source_image),
       "TargetImage" => map_image(target_image)
-    })
-  end
-
-  @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteFaces.html
-  """
-  @spec delete_faces(binary(), maybe_improper_list()) :: %{optional(any) => any}
-  def delete_faces(collection_id, face_ids) when is_binary(collection_id) and is_list(face_ids) do
-    request(:delete_collection, %{
-      "CollectionId" => collection_id,
-      "FaceIds" => face_ids
-    })
-  end
-
-  @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectFaces.html
-
-  NOTE: When using an S3Object, you may need to insure that
-  the S3 uses the same region as Rekognition
-  """
-  @spec detect_faces(binary() | S3Object.t(), maybe_improper_list()) :: %{optional(any) => any}
-  def detect_faces(image, attributes \\ ["DEFAULT"]) when is_list(attributes) do
-    request(:detect_faces, %{
-      "Attributes" => attributes,
-      "Image" => map_image(image)
     })
   end
 
@@ -76,12 +78,50 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteFaces.html
+  """
+  @spec delete_faces(binary(), maybe_improper_list()) :: %{optional(any) => any}
+  def delete_faces(collection_id, face_ids) when is_binary(collection_id) and is_list(face_ids) do
+    request(:delete_faces, %{
+      "CollectionId" => collection_id,
+      "FaceIds" => face_ids
+    })
+  end
+
+  @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeCollection.html
   """
   @spec describe_collection(binary()) :: %{optional(any) => any}
   def describe_collection(collection_id) when is_binary(collection_id) do
-    request(:delete_collection, %{
+    request(:describe_collection, %{
       "CollectionId" => collection_id
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectFaces.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
+  """
+  @spec detect_faces(binary() | S3Object.t(), maybe_improper_list()) :: %{optional(any) => any}
+  def detect_faces(image, attributes \\ ["DEFAULT"]) when is_list(attributes) do
+    request(:detect_faces, %{
+      "Attributes" => attributes,
+      "Image" => map_image(image)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectText.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
+  """
+  @spec detect_text(binary() | S3Object.t()) :: %{optional(any) => any}
+  def detect_text(image) do
+    request(:detect_text, %{
+      "Image" => map_image(image)
     })
   end
 
@@ -101,18 +141,7 @@ defmodule ExAws.Rekognition do
     })
   end
 
-  @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectText.html
-
-  NOTE: When using an S3Object, you may need to insure that
-  the S3 uses the same region as Rekognition
-  """
-  @spec detect_text(binary() | S3Object.t()) :: %{optional(any) => any}
-  def detect_text(image) do
-    request(:detect_text, %{
-      "Image" => map_image(image)
-    })
-  end
+  # Utility
 
   defp map_image(image) when is_binary(image) do
     %{"Bytes" => Base.encode64(image)}

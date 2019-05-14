@@ -3,8 +3,11 @@ defmodule ExAws.Rekognition do
   Operations on ExAws Rekognition
   """
   alias ExAws.Rekognition.S3Object
+  alias ExAws.Rekognition.NotificationChannelObject
 
+  #
   # https://docs.aws.amazon.com/rekognition/latest/dg/API_Operations.html
+  #
   @actions %{
     compare_faces: :post,
     create_collection: :post,
@@ -18,21 +21,21 @@ defmodule ExAws.Rekognition do
     # detect_labels: :post,
     # detect_moderation_labels: :post,
     detect_text: :post,
-    # get_celebrity_info: :post,
-    # get_celebrity_recognition: :post,
+    get_celebrity_info: :post,
+    get_celebrity_recognition: :post,
     # get_content_moderation: :post,
     # get_face_detection: :post,
     # get_face_search: :post,
     # get_label_detection: :post,
     # get_person_tracking: :post,
     # index_faces: :post,
-    list_collections: :post
+    list_collections: :post,
     # list_faces: :post,
     # list_stream_processors: :post,
     # recognize_celebrities: :post,
     # search_faces: :post,
     # search_faces_by_image: :post,
-    # start_celebrity_recognition: :post,
+    start_celebrity_recognition: :post
     # start_content_moderation: :post,
     # start_face_detection: :post,
     # start_face_search: :post,
@@ -45,9 +48,8 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_CompareFaces.html
   """
-  @spec compare_faces(binary() | S3Object.t(), binary() | S3Object.t(), number()) :: %{
-          optional(any) => any
-        }
+  @spec compare_faces(binary() | S3Object.t(), binary() | S3Object.t(), number()) ::
+          %ExAws.Operation.JSON{}
   def compare_faces(source_image, target_image, similarity_threshold \\ 0.8)
       when is_number(similarity_threshold) do
     request(:compare_faces, %{
@@ -60,7 +62,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateCollection.html
   """
-  @spec create_collection(binary()) :: %{optional(any) => any}
+  @spec create_collection(binary()) :: %ExAws.Operation.JSON{}
   def create_collection(collection_id) when is_binary(collection_id) do
     request(:create_collection, %{
       "CollectionId" => collection_id
@@ -70,7 +72,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteCollection.html
   """
-  @spec delete_collection(binary()) :: %{optional(any) => any}
+  @spec delete_collection(binary()) :: %ExAws.Operation.JSON{}
   def delete_collection(collection_id) when is_binary(collection_id) do
     request(:delete_collection, %{
       "CollectionId" => collection_id
@@ -80,7 +82,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteFaces.html
   """
-  @spec delete_faces(binary(), maybe_improper_list()) :: %{optional(any) => any}
+  @spec delete_faces(binary(), maybe_improper_list()) :: %ExAws.Operation.JSON{}
   def delete_faces(collection_id, face_ids) when is_binary(collection_id) and is_list(face_ids) do
     request(:delete_faces, %{
       "CollectionId" => collection_id,
@@ -91,7 +93,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeCollection.html
   """
-  @spec describe_collection(binary()) :: %{optional(any) => any}
+  @spec describe_collection(binary()) :: %ExAws.Operation.JSON{}
   def describe_collection(collection_id) when is_binary(collection_id) do
     request(:describe_collection, %{
       "CollectionId" => collection_id
@@ -104,7 +106,7 @@ defmodule ExAws.Rekognition do
   NOTE: When using an S3Object, you may need to insure that
   the S3 uses the same region as Rekognition
   """
-  @spec detect_faces(binary() | S3Object.t(), maybe_improper_list()) :: %{optional(any) => any}
+  @spec detect_faces(binary() | S3Object.t(), maybe_improper_list()) :: %ExAws.Operation.JSON{}
   def detect_faces(image, attributes \\ ["DEFAULT"]) when is_list(attributes) do
     request(:detect_faces, %{
       "Attributes" => attributes,
@@ -118,7 +120,7 @@ defmodule ExAws.Rekognition do
   NOTE: When using an S3Object, you may need to insure that
   the S3 uses the same region as Rekognition
   """
-  @spec detect_text(binary() | S3Object.t()) :: %{optional(any) => any}
+  @spec detect_text(binary() | S3Object.t()) :: %ExAws.Operation.JSON{}
   def detect_text(image) do
     request(:detect_text, %{
       "Image" => map_image(image)
@@ -128,16 +130,66 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html
   """
-  @spec list_collections(nil | binary(), nil | integer()) :: %{
-          :__struct__ => atom(),
-          optional(atom()) => any()
-        }
-  def list_collections(next_token \\ nil, max_results \\ nil)
-      when (is_binary(next_token) or is_nil(next_token)) and
-             (is_integer(max_results) or is_nil(max_results)) do
+  @spec list_collections(nil | integer(), nil | binary()) :: %ExAws.Operation.JSON{}
+  def list_collections(max_results \\ nil, next_token \\ nil)
+      when (is_integer(max_results) or is_nil(max_results)) and
+             (is_binary(next_token) or is_nil(next_token)) do
     request(:list_collections, %{
+      "MaxResults" => max_results,
+      "NextToken" => next_token
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityInfo.html
+  """
+  @spec get_celebrity_info(binary()) :: %ExAws.Operation.JSON{}
+  def get_celebrity_info(id) when is_binary(id) do
+    request(:get_celebrity_info, %{
+      "Id" => id
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityRecognition.html
+  """
+  @spec get_celebrity_recognition(binary(), nil | integer(), nil | binary(), :id | :timestamp) ::
+          %ExAws.Operation.JSON{}
+  def get_celebrity_recognition(job_id, max_results, next_token, sort_by \\ :id)
+      when is_binary(job_id) and
+             (is_integer(max_results) or is_nil(max_results)) and
+             (is_binary(next_token) or is_nil(next_token)) and
+             sort_by in [:id, :timestamp] do
+    request(:get_celebrity_recognition, %{
+      "JobId" => job_id,
+      "MaxResults" => max_results,
       "NextToken" => next_token,
-      "MaxResults" => max_results
+      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartCelebrityRecognition.html
+  """
+  @spec start_celebrity_recognition(
+          ExAws.Rekognition.S3Object.t(),
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_celebrity_recognition(
+        video,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_celebrity_recognition, %{
+      "ClientRequestToken" => client_request_token,
+      "JobTag" => job_tag,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
     })
   end
 
@@ -148,13 +200,7 @@ defmodule ExAws.Rekognition do
   end
 
   defp map_image(%S3Object{} = object) do
-    %{
-      "S3Object" => %{
-        "Bucket" => object.bucket,
-        "Name" => object.name,
-        "Version" => object.version
-      }
-    }
+    S3Object.map(object)
   end
 
   defp request(action, data) do

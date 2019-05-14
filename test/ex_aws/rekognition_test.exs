@@ -2,21 +2,23 @@ defmodule ExAws.RekognitionTest do
   use ExUnit.Case, async: true
   doctest ExAws.Rekognition
 
-  # alias ExAws.Rekognition.S3Object
-
+  #
   # Usage example - to run this test you need an existent
   # s3 bucket with an image.
+  #
+  # alias ExAws.Rekognition.S3Object
   #
   # test "detect text - s3 image" do
   #   s3_object = %S3Object{
   #     bucket: "test-bucket",
   #     name: "test.jpg"
   #   }
-
+  #
   #   assert {:ok, %{"TextDetections" => _}} =
-  #            ExAws.Rekognition.detect_text(s3_object)
-  #            |> ExAws.request(region: "us-east-2")
+  #     ExAws.Rekognition.detect_text(s3_object)
+  #     |> ExAws.request(region: "us-east-2")
   # end
+  #
 
   test "compare faces - image" do
     similarity_threshold = 0.0

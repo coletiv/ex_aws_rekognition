@@ -30,11 +30,11 @@ defmodule ExAws.Rekognition do
     # get_person_tracking: :post,
     index_faces: :post,
     list_collections: :post,
-    # list_faces: :post,
+    list_faces: :post,
     # list_stream_processors: :post,
     # recognize_celebrities: :post,
-    # search_faces: :post,
-    # search_faces_by_image: :post,
+    search_faces: :post,
+    search_faces_by_image: :post,
     start_celebrity_recognition: :post
     # start_content_moderation: :post,
     # start_face_detection: :post,
@@ -50,7 +50,7 @@ defmodule ExAws.Rekognition do
   """
   @spec compare_faces(binary() | S3Object.t(), binary() | S3Object.t(), number()) ::
           %ExAws.Operation.JSON{}
-  def compare_faces(source_image, target_image, similarity_threshold \\ 0.8)
+  def compare_faces(source_image, target_image, similarity_threshold \\ 80)
       when is_number(similarity_threshold) do
     request(:compare_faces, %{
       "SimilarityThreshold" => similarity_threshold,
@@ -175,6 +175,21 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_ListFaces.html
+  """
+  @spec list_faces(binary(), nil | integer(), nil | binary()) :: %ExAws.Operation.JSON{}
+  def list_faces(collection_id, max_results \\ nil, next_token \\ nil)
+      when is_binary(collection_id) and
+             (is_integer(max_results) or is_nil(max_results)) and
+             (is_binary(next_token) or is_nil(next_token)) do
+    request(:list_faces, %{
+      "CollectionId" => collection_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token
+    })
+  end
+
+  @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityInfo.html
   """
   @spec get_celebrity_info(binary()) :: %ExAws.Operation.JSON{}
@@ -199,6 +214,41 @@ defmodule ExAws.Rekognition do
       "MaxResults" => max_results,
       "NextToken" => next_token,
       "SortBy" => Atom.to_string(sort_by) |> String.upcase()
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFaces.html
+  """
+  @spec search_faces(binary(), binary(), number(), integer()) :: %ExAws.Operation.JSON{}
+  def search_faces(collection_id, face_id, face_match_threshold \\ 80, max_faces \\ 100)
+      when is_binary(collection_id) and is_binary(face_id) and
+             is_number(face_match_threshold) and is_integer(max_faces) do
+    request(:search_faces, %{
+      "CollectionId" => collection_id,
+      "FaceId" => face_id,
+      "FaceMatchThreshold" => face_match_threshold,
+      "MaxFaces" => max_faces
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFacesByImage.html
+  """
+  @spec search_faces_by_image(
+          binary(),
+          binary() | ExAws.Rekognition.S3Object.t(),
+          number(),
+          integer()
+        ) :: %ExAws.Operation.JSON{}
+  def search_faces_by_image(collection_id, image, face_match_threshold \\ 80, max_faces \\ 100)
+      when is_binary(collection_id) and
+             is_number(face_match_threshold) and is_integer(max_faces) do
+    request(:search_faces_by_image, %{
+      "CollectionId" => collection_id,
+      "Image" => map_image(image),
+      "FaceMatchThreshold" => face_match_threshold,
+      "MaxFaces" => max_faces
     })
   end
 

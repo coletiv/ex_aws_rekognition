@@ -74,4 +74,45 @@ defmodule ExAws.RekognitionTest do
     assert {:ok, %{"StatusCode" => 200}} =
              ExAws.Rekognition.delete_collection(collection_id) |> ExAws.request()
   end
+
+  test "index/list/search_by_image faces" do
+    collection_id = "ex_aws_rekognition_test_collection"
+
+    assert {:ok,
+            %{
+              "CollectionArn" => _,
+              "FaceModelVersion" => _,
+              "StatusCode" => 200
+            }} = ExAws.Rekognition.create_collection(collection_id) |> ExAws.request()
+
+    {:ok, image_binary} = File.read("test/assets/face_target.jpeg")
+
+    assert {:ok,
+            %{
+              "FaceModelVersion" => _,
+              "FaceRecords" => _,
+              "UnindexedFaces" => _
+            }} = ExAws.Rekognition.index_faces(collection_id, image_binary) |> ExAws.request()
+
+    assert {:ok,
+            %{
+              "FaceModelVersion" => _,
+              "Faces" => _
+            }} = ExAws.Rekognition.list_faces(collection_id) |> ExAws.request()
+
+    {:ok, image_binary} = File.read("test/assets/face_source.jpeg")
+
+    assert {:ok,
+            %{
+              "FaceMatches" => _,
+              "FaceModelVersion" => _,
+              "SearchedFaceBoundingBox" => _,
+              "SearchedFaceConfidence" => _
+            }} =
+             ExAws.Rekognition.search_faces_by_image(collection_id, image_binary)
+             |> ExAws.request()
+
+    assert {:ok, %{"StatusCode" => 200}} =
+             ExAws.Rekognition.delete_collection(collection_id) |> ExAws.request()
+  end
 end

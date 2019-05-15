@@ -1,6 +1,6 @@
 # ExAws.Rekognition
 
-**TODO: Add description**
+Rekognition uses [ex_aws](https://github.com/ex-aws/ex_aws) under the hood so you should go through their [README](https://github.com/ex-aws/ex_aws/blob/master/README.md) for more information on how to setup/configure the project, it's really easy.
 
 ## Installation
 

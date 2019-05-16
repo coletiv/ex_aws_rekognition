@@ -23,7 +23,7 @@ defmodule ExAws.Rekognition do
     detect_text: :post,
     get_celebrity_info: :post,
     get_celebrity_recognition: :post,
-    # get_content_moderation: :post,
+    get_content_moderation: :post,
     # get_face_detection: :post,
     # get_face_search: :post,
     # get_label_detection: :post,
@@ -248,6 +248,29 @@ defmodule ExAws.Rekognition do
              (is_binary(next_token) or is_nil(next_token)) and
              sort_by in [:id, :timestamp] do
     request(:get_celebrity_recognition, %{
+      "JobId" => job_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token,
+      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetContentModeration.html
+  """
+  @spec get_content_moderation(binary(), pos_integer(), nil | binary(), :name | :timestamp) ::
+          %ExAws.Operation.JSON{}
+  def get_content_moderation(
+        job_id,
+        max_results \\ 1000,
+        next_token \\ nil,
+        sort_by \\ :timestamp
+      )
+      when is_binary(job_id) and
+             (is_integer(max_results) and max_results > 0) and
+             (is_binary(next_token) or is_nil(next_token)) and
+             sort_by in [:name, :timestamp] do
+    request(:get_content_moderation, %{
       "JobId" => job_id,
       "MaxResults" => max_results,
       "NextToken" => next_token,

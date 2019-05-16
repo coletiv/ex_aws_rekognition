@@ -23,7 +23,7 @@ You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekogn
 | [GetContentModeration](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetContentModeration.html)           | ✅        |
 | [GetFaceDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceDetection.html)                   | ✅        |
 | [GetFaceSearch](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceSearch.html)                         | ✅        |
-| [GetLabelDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetLabelDetection.html)                 | 🚫        |
+| [GetLabelDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetLabelDetection.html)                 | ✅        |
 | [GetPersonTracking](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetPersonTracking.html)                 | 🚫        |
 | [IndexFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_IndexFaces.html)                               | ✅        |
 | [ListCollections](https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html)                     | ✅        |

@@ -35,8 +35,8 @@ defmodule ExAws.Rekognition do
     recognize_celebrities: :post,
     search_faces: :post,
     search_faces_by_image: :post,
-    start_celebrity_recognition: :post
-    # start_content_moderation: :post,
+    start_celebrity_recognition: :post,
+    start_content_moderation: :post
     # start_face_detection: :post,
     # start_face_search: :post,
     # start_label_detection: :post,
@@ -431,6 +431,35 @@ defmodule ExAws.Rekognition do
     request(:start_celebrity_recognition, %{
       "ClientRequestToken" => client_request_token,
       "JobTag" => job_tag,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartContentModeration.html
+  """
+  @spec start_content_moderation(
+          ExAws.Rekognition.S3Object.t(),
+          nil | binary(),
+          nil | binary(),
+          number(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_content_moderation(
+        video,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        min_confidence \\ 55,
+        notification_channel \\ nil
+      )
+      when (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) and
+             is_number(min_confidence) do
+    request(:start_content_moderation, %{
+      "ClientRequestToken" => client_request_token,
+      "JobTag" => job_tag,
+      "MinConfidence" => min_confidence,
       "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
     })

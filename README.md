@@ -33,7 +33,7 @@ You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekogn
 | [SearchFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFaces.html)                             | ✅        |
 | [SearchFacesByImage](https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFacesByImage.html)               | ✅        |
 | [StartCelebrityRecognition](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartCelebrityRecognition.html) | ✅        |
-| [StartContentModeration](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartContentModeration.html)       | 🚫        |
+| [StartContentModeration](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartContentModeration.html)       | ✅        |
 | [StartFaceDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceDetection.html)               | 🚫        |
 | [StartFaceSearch](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceSearch.html)                     | 🚫        |
 | [StartLabelDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartLabelDetection.html)             | 🚫        |

@@ -1,5 +1,10 @@
 # ExAws.Rekognition
 
+[![Hex.pm version](https://img.shields.io/hexpm/v/ex_aws_rekognition.svg)](https://hex.pm/packages/ex_aws_rekognition)
+[![Hex.pm downloads](https://img.shields.io/hexpm/dt/ex_aws_rekognition.svg)](https://hex.pm/packages/ex_aws_rekognition)
+[![Hex.pm weekly downloads](https://img.shields.io/hexpm/dw/ex_aws_rekognition.svg)](https://hex.pm/packages/ex_aws_rekognition)
+[![Hex.pm daily downloads](https://img.shields.io/hexpm/dd/ex_aws_rekognition.svg)](https://hex.pm/packages/ex_aws_rekognition)
+
 Rekognition uses [ex_aws](https://github.com/ex-aws/ex_aws) under the hood so you should go through their [README](https://github.com/ex-aws/ex_aws/blob/master/README.md) for more information on how to setup/configure the project, it's really easy.
 
 You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekognition/latest/dg/API_Operations.html) for the list of functionalities and available actions.

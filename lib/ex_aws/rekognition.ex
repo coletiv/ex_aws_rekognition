@@ -37,8 +37,8 @@ defmodule ExAws.Rekognition do
     search_faces_by_image: :post,
     start_celebrity_recognition: :post,
     start_content_moderation: :post,
-    start_face_detection: :post
-    # start_face_search: :post,
+    start_face_detection: :post,
+    start_face_search: :post
     # start_label_detection: :post,
     # start_person_tracking: :post,
     # start_stream_processor: :post,
@@ -488,6 +488,38 @@ defmodule ExAws.Rekognition do
     request(:start_face_detection, %{
       "ClientRequestToken" => client_request_token,
       "FaceAttributes" => Atom.to_string(face_attributes) |> String.upcase(),
+      "JobTag" => job_tag,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceSearch.html
+  """
+  @spec start_face_search(
+          ExAws.Rekognition.S3Object.t(),
+          binary(),
+          number(),
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_face_search(
+        video,
+        collection_id,
+        face_match_threshold \\ 80,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when is_binary(collection_id) and is_number(face_match_threshold) and
+             (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_face_search, %{
+      "ClientRequestToken" => client_request_token,
+      "CollectionId" => collection_id,
+      "FaceMatchThreshold" => face_match_threshold,
       "JobTag" => job_tag,
       "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)

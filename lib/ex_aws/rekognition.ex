@@ -38,8 +38,8 @@ defmodule ExAws.Rekognition do
     start_celebrity_recognition: :post,
     start_content_moderation: :post,
     start_face_detection: :post,
-    start_face_search: :post
-    # start_label_detection: :post,
+    start_face_search: :post,
+    start_label_detection: :post
     # start_person_tracking: :post,
     # start_stream_processor: :post,
     # stop_stream_processor: :post
@@ -521,6 +521,35 @@ defmodule ExAws.Rekognition do
       "CollectionId" => collection_id,
       "FaceMatchThreshold" => face_match_threshold,
       "JobTag" => job_tag,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartLabelDetection.html
+  """
+  @spec start_label_detection(
+          ExAws.Rekognition.S3Object.t(),
+          number(),
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_label_detection(
+        video,
+        min_confidence \\ 50,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when is_number(min_confidence) and
+             (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_label_detection, %{
+      "ClientRequestToken" => client_request_token,
+      "JobTag" => job_tag,
+      "MinConfidence" => min_confidence,
       "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
     })

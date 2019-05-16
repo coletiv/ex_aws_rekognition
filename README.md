@@ -1,6 +1,8 @@
 # ExAws.Rekognition
 
 [![Hex.pm version](https://img.shields.io/hexpm/v/ex_aws_rekognition.svg)](https://hex.pm/packages/ex_aws_rekognition)
+[![Build Docs](https://img.shields.io/badge/hexdocs-release-blue.svg)](https://hexdocs.pm/ex_aws_rekognition/ExAws.Rekognition.html)
+
 [![Hex.pm downloads](https://img.shields.io/hexpm/dt/ex_aws_rekognition.svg)](https://hex.pm/packages/ex_aws_rekognition)
 [![Hex.pm weekly downloads](https://img.shields.io/hexpm/dw/ex_aws_rekognition.svg)](https://hex.pm/packages/ex_aws_rekognition)
 [![Hex.pm daily downloads](https://img.shields.io/hexpm/dd/ex_aws_rekognition.svg)](https://hex.pm/packages/ex_aws_rekognition)

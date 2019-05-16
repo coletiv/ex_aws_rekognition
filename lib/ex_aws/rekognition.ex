@@ -240,11 +240,11 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityRecognition.html
   """
-  @spec get_celebrity_recognition(binary(), nil | integer(), nil | binary(), :id | :timestamp) ::
+  @spec get_celebrity_recognition(binary(), pos_integer(), nil | binary(), :id | :timestamp) ::
           %ExAws.Operation.JSON{}
-  def get_celebrity_recognition(job_id, max_results \\ nil, next_token \\ nil, sort_by \\ :id)
+  def get_celebrity_recognition(job_id, max_results \\ 1000, next_token \\ nil, sort_by \\ :id)
       when is_binary(job_id) and
-             (is_integer(max_results) or is_nil(max_results)) and
+             (is_integer(max_results) and max_results > 0) and
              (is_binary(next_token) or is_nil(next_token)) and
              sort_by in [:id, :timestamp] do
     request(:get_celebrity_recognition, %{

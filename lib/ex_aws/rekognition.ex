@@ -441,21 +441,21 @@ defmodule ExAws.Rekognition do
   """
   @spec start_content_moderation(
           ExAws.Rekognition.S3Object.t(),
-          nil | binary(),
-          nil | binary(),
           number(),
+          nil | binary(),
+          nil | binary(),
           nil | ExAws.Rekognition.NotificationChannelObject.t()
         ) :: %ExAws.Operation.JSON{}
   def start_content_moderation(
         video,
+        min_confidence \\ 55,
         client_request_token \\ nil,
         job_tag \\ nil,
-        min_confidence \\ 55,
         notification_channel \\ nil
       )
-      when (is_binary(client_request_token) or is_nil(client_request_token)) and
-             (is_binary(job_tag) or is_nil(job_tag)) and
-             is_number(min_confidence) do
+      when is_number(min_confidence) and
+             (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
     request(:start_content_moderation, %{
       "ClientRequestToken" => client_request_token,
       "JobTag" => job_tag,

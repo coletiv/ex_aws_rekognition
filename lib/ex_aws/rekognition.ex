@@ -36,8 +36,8 @@ defmodule ExAws.Rekognition do
     search_faces: :post,
     search_faces_by_image: :post,
     start_celebrity_recognition: :post,
-    start_content_moderation: :post
-    # start_face_detection: :post,
+    start_content_moderation: :post,
+    start_face_detection: :post
     # start_face_search: :post,
     # start_label_detection: :post,
     # start_person_tracking: :post,
@@ -460,6 +460,35 @@ defmodule ExAws.Rekognition do
       "ClientRequestToken" => client_request_token,
       "JobTag" => job_tag,
       "MinConfidence" => min_confidence,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceDetection.html
+  """
+  @spec start_face_detection(
+          ExAws.Rekognition.S3Object.t(),
+          :default | :all,
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_face_detection(
+        video,
+        face_attributes \\ :default,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when face_attributes in [:default, :all] and
+             (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_face_detection, %{
+      "ClientRequestToken" => client_request_token,
+      "FaceAttributes" => Atom.to_string(face_attributes) |> String.upcase(),
+      "JobTag" => job_tag,
       "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
     })

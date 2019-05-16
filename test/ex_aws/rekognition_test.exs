@@ -116,6 +116,17 @@ defmodule ExAws.RekognitionTest do
              ExAws.Rekognition.delete_collection(collection_id) |> ExAws.request()
   end
 
+  test "recognize celebrities" do
+    {:ok, image_binary} = File.read("test/assets/face_target.jpeg")
+
+    assert {:ok,
+            %{
+              "CelebrityFaces" => _,
+              "OrientationCorrection" => _,
+              "UnrecognizedFaces" => _
+            }} = ExAws.Rekognition.recognize_celebrities(image_binary) |> ExAws.request()
+  end
+
   test "detect labels/moderation labels" do
     {:ok, image_binary} = File.read("test/assets/face_target.jpeg")
 

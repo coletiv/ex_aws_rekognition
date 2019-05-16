@@ -29,7 +29,7 @@ You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekogn
 | [ListCollections](https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html)                     | ✅        |
 | [ListFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_ListFaces.html)                                 | ✅        |
 | [ListStreamProcessors](https://docs.aws.amazon.com/rekognition/latest/dg/API_ListStreamProcessors.html)           | 🚫        |
-| [RecognizeCelebrities](https://docs.aws.amazon.com/rekognition/latest/dg/API_RecognizeCelebrities.html)           | 🚫        |
+| [RecognizeCelebrities](https://docs.aws.amazon.com/rekognition/latest/dg/API_RecognizeCelebrities.html)           | ✅        |
 | [SearchFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFaces.html)                             | ✅        |
 | [SearchFacesByImage](https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFacesByImage.html)               | ✅        |
 | [StartCelebrityRecognition](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartCelebrityRecognition.html) | ✅        |

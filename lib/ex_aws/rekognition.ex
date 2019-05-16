@@ -32,7 +32,7 @@ defmodule ExAws.Rekognition do
     list_collections: :post,
     list_faces: :post,
     # list_stream_processors: :post,
-    # recognize_celebrities: :post,
+    recognize_celebrities: :post,
     search_faces: :post,
     search_faces_by_image: :post,
     start_celebrity_recognition: :post
@@ -252,6 +252,17 @@ defmodule ExAws.Rekognition do
       "MaxResults" => max_results,
       "NextToken" => next_token,
       "SortBy" => Atom.to_string(sort_by) |> String.upcase()
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_RecognizeCelebrities.html
+  """
+  @spec recognize_celebrities(binary() | ExAws.Rekognition.S3Object.t()) ::
+          %ExAws.Operation.JSON{}
+  def recognize_celebrities(image) do
+    request(:recognize_celebrities, %{
+      "Image" => map_image(image)
     })
   end
 

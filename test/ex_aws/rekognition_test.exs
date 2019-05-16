@@ -115,4 +115,20 @@ defmodule ExAws.RekognitionTest do
     assert {:ok, %{"StatusCode" => 200}} =
              ExAws.Rekognition.delete_collection(collection_id) |> ExAws.request()
   end
+
+  test "detect labels/moderation labels" do
+    {:ok, image_binary} = File.read("test/assets/face_target.jpeg")
+
+    assert {:ok,
+            %{
+              "LabelModelVersion" => _,
+              "Labels" => _
+            }} = ExAws.Rekognition.detect_labels(image_binary) |> ExAws.request()
+
+    assert {:ok,
+            %{
+              "ModerationLabels" => _,
+              "ModerationModelVersion" => _
+            }} = ExAws.Rekognition.detect_moderation_labels(image_binary) |> ExAws.request()
+  end
 end

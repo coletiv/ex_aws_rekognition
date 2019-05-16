@@ -18,8 +18,8 @@ defmodule ExAws.Rekognition do
     describe_collection: :post,
     # describe_stream_processor: :post,
     detect_faces: :post,
-    # detect_labels: :post,
-    # detect_moderation_labels: :post,
+    detect_labels: :post,
+    detect_moderation_labels: :post,
     detect_text: :post,
     get_celebrity_info: :post,
     get_celebrity_recognition: :post,
@@ -47,6 +47,9 @@ defmodule ExAws.Rekognition do
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_CompareFaces.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
   """
   @spec compare_faces(binary() | S3Object.t(), binary() | S3Object.t(), number()) ::
           %ExAws.Operation.JSON{}
@@ -115,6 +118,38 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectLabels.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
+  """
+  @spec detect_labels(binary() | ExAws.Rekognition.S3Object.t(), nil | integer(), number()) ::
+          %ExAws.Operation.JSON{}
+  def detect_labels(image, max_labels \\ nil, min_confidence \\ 55)
+      when (is_integer(max_labels) or is_nil(max_labels)) and is_number(min_confidence) do
+    request(:detect_labels, %{
+      "Image" => map_image(image),
+      "MaxLabels" => max_labels,
+      "MinConfidence" => min_confidence
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectModerationLabels.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
+  """
+  @spec detect_moderation_labels(binary() | ExAws.Rekognition.S3Object.t(), number()) ::
+          %ExAws.Operation.JSON{}
+  def detect_moderation_labels(image, min_confidence \\ 50) when is_number(min_confidence) do
+    request(:detect_moderation_labels, %{
+      "Image" => map_image(image),
+      "MinConfidence" => min_confidence
+    })
+  end
+
+  @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectText.html
 
   NOTE: When using an S3Object, you may need to insure that
@@ -129,6 +164,9 @@ defmodule ExAws.Rekognition do
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_IndexFaces.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
   """
   @spec index_faces(
           binary(),
@@ -234,6 +272,9 @@ defmodule ExAws.Rekognition do
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFacesByImage.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
   """
   @spec search_faces_by_image(
           binary(),

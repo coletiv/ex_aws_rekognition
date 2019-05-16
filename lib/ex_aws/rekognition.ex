@@ -39,8 +39,8 @@ defmodule ExAws.Rekognition do
     start_content_moderation: :post,
     start_face_detection: :post,
     start_face_search: :post,
-    start_label_detection: :post
-    # start_person_tracking: :post,
+    start_label_detection: :post,
+    start_person_tracking: :post
     # start_stream_processor: :post,
     # stop_stream_processor: :post
   }
@@ -550,6 +550,28 @@ defmodule ExAws.Rekognition do
       "ClientRequestToken" => client_request_token,
       "JobTag" => job_tag,
       "MinConfidence" => min_confidence,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @spec start_person_tracking(
+          ExAws.Rekognition.S3Object.t(),
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_person_tracking(
+        video,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_celebrity_recognition, %{
+      "ClientRequestToken" => client_request_token,
+      "JobTag" => job_tag,
       "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
     })

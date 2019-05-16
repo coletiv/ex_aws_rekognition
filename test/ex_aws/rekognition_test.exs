@@ -42,6 +42,14 @@ defmodule ExAws.RekognitionTest do
              |> ExAws.request()
   end
 
+  test "detect labels - image" do
+    {:ok, image_binary} = File.read("test/assets/label_food_source.jpeg")
+
+    assert {:ok, %{"Labels" => _}} =
+             ExAws.Rekognition.detect_labels(image_binary)
+             |> ExAws.request()
+  end
+
   test "detect text - image" do
     {:ok, image_binary} = File.read("test/assets/test.jpg")
 

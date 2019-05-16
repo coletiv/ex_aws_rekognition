@@ -18,7 +18,7 @@ defmodule ExAws.Rekognition do
     describe_collection: :post,
     # describe_stream_processor: :post,
     detect_faces: :post,
-    # detect_labels: :post,
+    detect_labels: :post,
     # detect_moderation_labels: :post,
     detect_text: :post,
     get_celebrity_info: :post,
@@ -111,6 +111,21 @@ defmodule ExAws.Rekognition do
     request(:detect_faces, %{
       "Attributes" => attributes,
       "Image" => map_image(image)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectLabels.html
+
+  NOTE: When using an S3Object, you may need to insure that
+  the S3 uses the same region as Rekognition
+  """
+  @spec detect_labels(binary() | S3Object.t(), integer(), integer()) :: %ExAws.Operation.JSON{}
+  def detect_labels(image, max_labels \\ 10, min_confidence \\ 55) do
+    request(:detect_labels, %{
+      "Image" => map_image(image),
+      "MaxLabels" => max_labels,
+      "MinConfidence" => min_confidence
     })
   end
 

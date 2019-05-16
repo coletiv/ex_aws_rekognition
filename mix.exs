@@ -1,7 +1,7 @@
 defmodule ExAws.Rekognition.MixProject do
   use Mix.Project
 
-  @version "0.3.1"
+  @version "0.4.0"
   @service "rekognition"
   @url "https://github.com/coletiv/ex_aws_#{@service}"
   @name __MODULE__ |> Module.split() |> Enum.take(2) |> Enum.join(".")

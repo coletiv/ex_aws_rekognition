@@ -24,7 +24,7 @@ defmodule ExAws.Rekognition do
     get_celebrity_info: :post,
     get_celebrity_recognition: :post,
     get_content_moderation: :post,
-    # get_face_detection: :post,
+    get_face_detection: :post,
     # get_face_search: :post,
     # get_label_detection: :post,
     # get_person_tracking: :post,
@@ -275,6 +275,21 @@ defmodule ExAws.Rekognition do
       "MaxResults" => max_results,
       "NextToken" => next_token,
       "SortBy" => Atom.to_string(sort_by) |> String.upcase()
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceDetection.html
+  """
+  @spec get_face_detection(binary(), pos_integer(), nil | binary()) :: %ExAws.Operation.JSON{}
+  def get_face_detection(job_id, max_results \\ 1000, next_token \\ nil)
+      when is_binary(job_id) and
+             (is_integer(max_results) and max_results > 0) and
+             (is_binary(next_token) or is_nil(next_token)) do
+    request(:get_face_detection, %{
+      "JobId" => job_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token
     })
   end
 

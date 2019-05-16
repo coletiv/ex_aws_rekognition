@@ -20,11 +20,11 @@ You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekogn
 | [DetectText](https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectText.html)                               | ✅        |
 | [GetCelebrityInfo](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityInfo.html)                   | ✅        |
 | [GetCelebrityRecognition](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityRecognition.html)     | ✅        |
-| [GetContentModeration](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetContentModeration.html)           | 🚫        |
-| [GetFaceDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceDetection.html)                   | 🚫        |
-| [GetFaceSearch](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceSearch.html)                         | 🚫        |
-| [GetLabelDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetLabelDetection.html)                 | 🚫        |
-| [GetPersonTracking](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetPersonTracking.html)                 | 🚫        |
+| [GetContentModeration](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetContentModeration.html)           | ✅        |
+| [GetFaceDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceDetection.html)                   | ✅        |
+| [GetFaceSearch](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceSearch.html)                         | ✅        |
+| [GetLabelDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetLabelDetection.html)                 | ✅        |
+| [GetPersonTracking](https://docs.aws.amazon.com/rekognition/latest/dg/API_GetPersonTracking.html)                 | ✅        |
 | [IndexFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_IndexFaces.html)                               | ✅        |
 | [ListCollections](https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html)                     | ✅        |
 | [ListFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_ListFaces.html)                                 | ✅        |
@@ -33,11 +33,11 @@ You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekogn
 | [SearchFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFaces.html)                             | ✅        |
 | [SearchFacesByImage](https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFacesByImage.html)               | ✅        |
 | [StartCelebrityRecognition](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartCelebrityRecognition.html) | ✅        |
-| [StartContentModeration](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartContentModeration.html)       | 🚫        |
-| [StartFaceDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceDetection.html)               | 🚫        |
-| [StartFaceSearch](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceSearch.html)                     | 🚫        |
-| [StartLabelDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartLabelDetection.html)             | 🚫        |
-| [StartPersonTracking](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartPersonTracking.html)             | 🚫        |
+| [StartContentModeration](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartContentModeration.html)       | ✅        |
+| [StartFaceDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceDetection.html)               | ✅        |
+| [StartFaceSearch](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceSearch.html)                     | ✅        |
+| [StartLabelDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartLabelDetection.html)             | ✅        |
+| [StartPersonTracking](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartPersonTracking.html)             | ✅        |
 | [StartStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartStreamProcessor.html)           | 🚫        |
 | [StopStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_StopStreamProcessor.html)             | 🚫        |
 
@@ -49,7 +49,7 @@ by adding `ex_aws_rekognition` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_aws_rekognition, "~> 0.3.1"}
+    {:ex_aws_rekognition, "~> 0.4.0"}
   ]
 end
 ```

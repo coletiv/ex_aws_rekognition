@@ -23,11 +23,11 @@ defmodule ExAws.Rekognition do
     detect_text: :post,
     get_celebrity_info: :post,
     get_celebrity_recognition: :post,
-    # get_content_moderation: :post,
-    # get_face_detection: :post,
-    # get_face_search: :post,
-    # get_label_detection: :post,
-    # get_person_tracking: :post,
+    get_content_moderation: :post,
+    get_face_detection: :post,
+    get_face_search: :post,
+    get_label_detection: :post,
+    get_person_tracking: :post,
     index_faces: :post,
     list_collections: :post,
     list_faces: :post,
@@ -35,12 +35,12 @@ defmodule ExAws.Rekognition do
     recognize_celebrities: :post,
     search_faces: :post,
     search_faces_by_image: :post,
-    start_celebrity_recognition: :post
-    # start_content_moderation: :post,
-    # start_face_detection: :post,
-    # start_face_search: :post,
-    # start_label_detection: :post,
-    # start_person_tracking: :post,
+    start_celebrity_recognition: :post,
+    start_content_moderation: :post,
+    start_face_detection: :post,
+    start_face_search: :post,
+    start_label_detection: :post,
+    start_person_tracking: :post
     # start_stream_processor: :post,
     # stop_stream_processor: :post
   }
@@ -240,14 +240,121 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityRecognition.html
   """
-  @spec get_celebrity_recognition(binary(), nil | integer(), nil | binary(), :id | :timestamp) ::
+  @spec get_celebrity_recognition(binary(), pos_integer(), nil | binary(), :id | :timestamp) ::
           %ExAws.Operation.JSON{}
-  def get_celebrity_recognition(job_id, max_results \\ nil, next_token \\ nil, sort_by \\ :id)
+  def get_celebrity_recognition(job_id, max_results \\ 1000, next_token \\ nil, sort_by \\ :id)
       when is_binary(job_id) and
-             (is_integer(max_results) or is_nil(max_results)) and
+             (is_integer(max_results) and max_results > 0) and
              (is_binary(next_token) or is_nil(next_token)) and
              sort_by in [:id, :timestamp] do
     request(:get_celebrity_recognition, %{
+      "JobId" => job_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token,
+      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetContentModeration.html
+  """
+  @spec get_content_moderation(binary(), pos_integer(), nil | binary(), :name | :timestamp) ::
+          %ExAws.Operation.JSON{}
+  def get_content_moderation(
+        job_id,
+        max_results \\ 1000,
+        next_token \\ nil,
+        sort_by \\ :timestamp
+      )
+      when is_binary(job_id) and
+             (is_integer(max_results) and max_results > 0) and
+             (is_binary(next_token) or is_nil(next_token)) and
+             sort_by in [:name, :timestamp] do
+    request(:get_content_moderation, %{
+      "JobId" => job_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token,
+      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceDetection.html
+  """
+  @spec get_face_detection(binary(), pos_integer(), nil | binary()) :: %ExAws.Operation.JSON{}
+  def get_face_detection(job_id, max_results \\ 1000, next_token \\ nil)
+      when is_binary(job_id) and
+             (is_integer(max_results) and max_results > 0) and
+             (is_binary(next_token) or is_nil(next_token)) do
+    request(:get_face_detection, %{
+      "JobId" => job_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceSearch.html
+  """
+  @spec get_face_search(binary(), pos_integer(), nil | binary(), :index | :timestamp) ::
+          %ExAws.Operation.JSON{}
+  def get_face_search(
+        job_id,
+        max_results \\ 1000,
+        next_token \\ nil,
+        sort_by \\ :timestamp
+      )
+      when is_binary(job_id) and
+             (is_integer(max_results) and max_results > 0) and
+             (is_binary(next_token) or is_nil(next_token)) and
+             sort_by in [:index, :timestamp] do
+    request(:get_face_search, %{
+      "JobId" => job_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token,
+      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetLabelDetection.html
+  """
+  @spec get_label_detection(binary(), pos_integer(), nil | binary(), :name | :timestamp) ::
+          %ExAws.Operation.JSON{}
+  def get_label_detection(
+        job_id,
+        max_results \\ 1000,
+        next_token \\ nil,
+        sort_by \\ :timestamp
+      )
+      when is_binary(job_id) and
+             (is_integer(max_results) and max_results > 0) and
+             (is_binary(next_token) or is_nil(next_token)) and
+             sort_by in [:name, :timestamp] do
+    request(:get_label_detection, %{
+      "JobId" => job_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token,
+      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetPersonTracking.html
+  """
+  @spec get_person_tracking(binary(), pos_integer(), nil | binary(), :index | :timestamp) ::
+          %ExAws.Operation.JSON{}
+  def get_person_tracking(
+        job_id,
+        max_results \\ 1000,
+        next_token \\ nil,
+        sort_by \\ :timestamp
+      )
+      when is_binary(job_id) and
+             (is_integer(max_results) and max_results > 0) and
+             (is_binary(next_token) or is_nil(next_token)) and
+             sort_by in [:index, :timestamp] do
+    request(:get_person_tracking, %{
       "JobId" => job_id,
       "MaxResults" => max_results,
       "NextToken" => next_token,
@@ -314,6 +421,147 @@ defmodule ExAws.Rekognition do
           nil | ExAws.Rekognition.NotificationChannelObject.t()
         ) :: %ExAws.Operation.JSON{}
   def start_celebrity_recognition(
+        video,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_celebrity_recognition, %{
+      "ClientRequestToken" => client_request_token,
+      "JobTag" => job_tag,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartContentModeration.html
+  """
+  @spec start_content_moderation(
+          ExAws.Rekognition.S3Object.t(),
+          number(),
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_content_moderation(
+        video,
+        min_confidence \\ 55,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when is_number(min_confidence) and
+             (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_content_moderation, %{
+      "ClientRequestToken" => client_request_token,
+      "JobTag" => job_tag,
+      "MinConfidence" => min_confidence,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceDetection.html
+  """
+  @spec start_face_detection(
+          ExAws.Rekognition.S3Object.t(),
+          :default | :all,
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_face_detection(
+        video,
+        face_attributes \\ :default,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when face_attributes in [:default, :all] and
+             (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_face_detection, %{
+      "ClientRequestToken" => client_request_token,
+      "FaceAttributes" => Atom.to_string(face_attributes) |> String.upcase(),
+      "JobTag" => job_tag,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceSearch.html
+  """
+  @spec start_face_search(
+          ExAws.Rekognition.S3Object.t(),
+          binary(),
+          number(),
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_face_search(
+        video,
+        collection_id,
+        face_match_threshold \\ 80,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when is_binary(collection_id) and is_number(face_match_threshold) and
+             (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_face_search, %{
+      "ClientRequestToken" => client_request_token,
+      "CollectionId" => collection_id,
+      "FaceMatchThreshold" => face_match_threshold,
+      "JobTag" => job_tag,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartLabelDetection.html
+  """
+  @spec start_label_detection(
+          ExAws.Rekognition.S3Object.t(),
+          number(),
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_label_detection(
+        video,
+        min_confidence \\ 50,
+        client_request_token \\ nil,
+        job_tag \\ nil,
+        notification_channel \\ nil
+      )
+      when is_number(min_confidence) and
+             (is_binary(client_request_token) or is_nil(client_request_token)) and
+             (is_binary(job_tag) or is_nil(job_tag)) do
+    request(:start_label_detection, %{
+      "ClientRequestToken" => client_request_token,
+      "JobTag" => job_tag,
+      "MinConfidence" => min_confidence,
+      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
+      "Video" => S3Object.map(video)
+    })
+  end
+
+  @spec start_person_tracking(
+          ExAws.Rekognition.S3Object.t(),
+          nil | binary(),
+          nil | binary(),
+          nil | ExAws.Rekognition.NotificationChannelObject.t()
+        ) :: %ExAws.Operation.JSON{}
+  def start_person_tracking(
         video,
         client_request_token \\ nil,
         job_tag \\ nil,

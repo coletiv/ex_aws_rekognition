@@ -588,6 +588,9 @@ defmodule ExAws.Rekognition do
     })
   end
 
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartPersonTracking.html
+  """
   @spec start_person_tracking(
           ExAws.Rekognition.S3Object.t(),
           nil | binary(),

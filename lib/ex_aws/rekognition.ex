@@ -11,12 +11,12 @@ defmodule ExAws.Rekognition do
   @actions %{
     compare_faces: :post,
     create_collection: :post,
-    # create_stream_processor: :post,
+    create_stream_processor: :post,
     delete_collection: :post,
     delete_faces: :post,
-    # delete_stream_processor: :post,
+    delete_stream_processor: :post,
     describe_collection: :post,
-    # describe_stream_processor: :post,
+    describe_stream_processor: :post,
     detect_faces: :post,
     detect_labels: :post,
     detect_moderation_labels: :post,
@@ -31,7 +31,7 @@ defmodule ExAws.Rekognition do
     index_faces: :post,
     list_collections: :post,
     list_faces: :post,
-    # list_stream_processors: :post,
+    list_stream_processors: :post,
     recognize_celebrities: :post,
     search_faces: :post,
     search_faces_by_image: :post,
@@ -40,9 +40,9 @@ defmodule ExAws.Rekognition do
     start_face_detection: :post,
     start_face_search: :post,
     start_label_detection: :post,
-    start_person_tracking: :post
-    # start_stream_processor: :post,
-    # stop_stream_processor: :post
+    start_person_tracking: :post,
+    start_stream_processor: :post,
+    stop_stream_processor: :post
   }
 
   @doc """
@@ -73,6 +73,44 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateStreamProcessor.html
+  """
+  @spec create_stream_processor(binary(), binary(), binary(), binary(), nil | binary(), number()) ::
+          %ExAws.Operation.JSON{}
+  def create_stream_processor(
+        input,
+        output,
+        name,
+        role_arn,
+        collection_id \\ nil,
+        face_match_threshold \\ 70
+      )
+      when is_binary(input) and is_binary(output) and is_binary(name) and is_binary(role_arn) and
+             (is_binary(collection_id) or is_nil(collection_id)) and
+             is_number(face_match_threshold) do
+    request(:create_stream_processor, %{
+      "Input" => %{
+        "KinesisVideoStream" => %{
+          "Arn" => input
+        }
+      },
+      "Name" => name,
+      "Output" => %{
+        "KinesisDataStream" => %{
+          "Arn" => output
+        }
+      },
+      "RoleArn" => role_arn,
+      "Settings" => %{
+        "FaceSearch" => %{
+          "CollectionId" => collection_id,
+          "FaceMatchThreshold" => face_match_threshold
+        }
+      }
+    })
+  end
+
+  @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteCollection.html
   """
   @spec delete_collection(binary()) :: %ExAws.Operation.JSON{}
@@ -94,12 +132,32 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteStreamProcessor.html
+  """
+  @spec delete_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  def delete_stream_processor(name) when is_binary(name) do
+    request(:delete_stream_processor, %{
+      "Name" => name
+    })
+  end
+
+  @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeCollection.html
   """
   @spec describe_collection(binary()) :: %ExAws.Operation.JSON{}
   def describe_collection(collection_id) when is_binary(collection_id) do
     request(:describe_collection, %{
       "CollectionId" => collection_id
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeStreamProcessor.html
+  """
+  @spec describe_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  def describe_stream_processor(name) when is_binary(name) do
+    request(:describe_stream_processor, %{
+      "Name" => name
     })
   end
 
@@ -222,6 +280,19 @@ defmodule ExAws.Rekognition do
              (is_binary(next_token) or is_nil(next_token)) do
     request(:list_faces, %{
       "CollectionId" => collection_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_ListStreamProcessors.html
+  """
+  @spec list_stream_processors(pos_integer(), nil | binary()) :: %ExAws.Operation.JSON{}
+  def list_stream_processors(max_results \\ 1000, next_token \\ nil)
+      when is_integer(max_results) and max_results > 0 and
+             (is_binary(next_token) or is_nil(next_token)) do
+    request(:list_stream_processors, %{
       "MaxResults" => max_results,
       "NextToken" => next_token
     })
@@ -555,6 +626,9 @@ defmodule ExAws.Rekognition do
     })
   end
 
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartPersonTracking.html
+  """
   @spec start_person_tracking(
           ExAws.Rekognition.S3Object.t(),
           nil | binary(),
@@ -574,6 +648,26 @@ defmodule ExAws.Rekognition do
       "JobTag" => job_tag,
       "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartStreamProcessor.html
+  """
+  @spec start_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  def start_stream_processor(name) when is_binary(name) do
+    request(:start_stream_processor, %{
+      "Name" => name
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StopStreamProcessor.html
+  """
+  @spec stop_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  def stop_stream_processor(name) when is_binary(name) do
+    request(:stop_stream_processor, %{
+      "Name" => name
     })
   end
 

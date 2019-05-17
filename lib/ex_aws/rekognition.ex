@@ -31,7 +31,7 @@ defmodule ExAws.Rekognition do
     index_faces: :post,
     list_collections: :post,
     list_faces: :post,
-    # list_stream_processors: :post,
+    list_stream_processors: :post,
     recognize_celebrities: :post,
     search_faces: :post,
     search_faces_by_image: :post,
@@ -242,6 +242,19 @@ defmodule ExAws.Rekognition do
              (is_binary(next_token) or is_nil(next_token)) do
     request(:list_faces, %{
       "CollectionId" => collection_id,
+      "MaxResults" => max_results,
+      "NextToken" => next_token
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_ListStreamProcessors.html
+  """
+  @spec list_stream_processors(pos_integer(), nil | binary()) :: %ExAws.Operation.JSON{}
+  def list_stream_processors(max_results \\ 1000, next_token \\ nil)
+      when is_integer(max_results) and max_results > 0 and
+             (is_binary(next_token) or is_nil(next_token)) do
+    request(:list_stream_processors, %{
       "MaxResults" => max_results,
       "NextToken" => next_token
     })

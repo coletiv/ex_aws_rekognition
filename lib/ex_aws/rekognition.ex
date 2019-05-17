@@ -11,7 +11,7 @@ defmodule ExAws.Rekognition do
   @actions %{
     compare_faces: :post,
     create_collection: :post,
-    # create_stream_processor: :post,
+    create_stream_processor: :post,
     delete_collection: :post,
     delete_faces: :post,
     delete_stream_processor: :post,
@@ -69,6 +69,44 @@ defmodule ExAws.Rekognition do
   def create_collection(collection_id) when is_binary(collection_id) do
     request(:create_collection, %{
       "CollectionId" => collection_id
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateStreamProcessor.html
+  """
+  @spec create_stream_processor(binary(), binary(), binary(), binary(), nil | binary(), number()) ::
+          %ExAws.Operation.JSON{}
+  def create_stream_processor(
+        input,
+        output,
+        name,
+        role_arn,
+        collection_id \\ nil,
+        face_match_threshold \\ 70
+      )
+      when is_binary(input) and is_binary(output) and is_binary(name) and is_binary(role_arn) and
+             (is_binary(collection_id) or is_nil(collection_id)) and
+             is_number(face_match_threshold) do
+    request(:create_stream_processor, %{
+      "Input" => %{
+        "KinesisVideoStream" => %{
+          "Arn" => input
+        }
+      },
+      "Name" => name,
+      "Output" => %{
+        "KinesisDataStream" => %{
+          "Arn" => output
+        }
+      },
+      "RoleArn" => role_arn,
+      "Settings" => %{
+        "FaceSearch" => %{
+          "CollectionId" => collection_id,
+          "FaceMatchThreshold" => face_match_threshold
+        }
+      }
     })
   end
 

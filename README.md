@@ -15,7 +15,7 @@ You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekogn
 | ----------------------------------------------------------------------------------------------------------------- | --------- |
 | [CompareFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_CompareFaces.html)                           | ✅        |
 | [CreateCollection](https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateCollection.html)                   | ✅        |
-| [CreateStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateStreamProcessor.html)         | 🚫        |
+| [CreateStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateStreamProcessor.html)         | ✅        |
 | [DeleteCollection](https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteCollection.html)                   | ✅        |
 | [DeleteFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteFaces.html)                             | ✅        |
 | [DeleteStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteStreamProcessor.html)         | ✅        |

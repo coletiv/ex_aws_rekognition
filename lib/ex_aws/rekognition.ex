@@ -41,8 +41,8 @@ defmodule ExAws.Rekognition do
     start_face_search: :post,
     start_label_detection: :post,
     start_person_tracking: :post,
-    start_stream_processor: :post
-    # stop_stream_processor: :post
+    start_stream_processor: :post,
+    stop_stream_processor: :post
   }
 
   @doc """
@@ -619,6 +619,16 @@ defmodule ExAws.Rekognition do
   @spec start_stream_processor(binary()) :: %ExAws.Operation.JSON{}
   def start_stream_processor(name) when is_binary(name) do
     request(:start_stream_processor, %{
+      "Name" => name
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StopStreamProcessor.html
+  """
+  @spec stop_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  def stop_stream_processor(name) when is_binary(name) do
+    request(:stop_stream_processor, %{
       "Name" => name
     })
   end

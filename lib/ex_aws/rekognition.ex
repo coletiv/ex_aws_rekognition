@@ -14,7 +14,7 @@ defmodule ExAws.Rekognition do
     # create_stream_processor: :post,
     delete_collection: :post,
     delete_faces: :post,
-    # delete_stream_processor: :post,
+    delete_stream_processor: :post,
     describe_collection: :post,
     # describe_stream_processor: :post,
     detect_faces: :post,
@@ -90,6 +90,16 @@ defmodule ExAws.Rekognition do
     request(:delete_faces, %{
       "CollectionId" => collection_id,
       "FaceIds" => face_ids
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteStreamProcessor.html
+  """
+  @spec delete_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  def delete_stream_processor(name) when is_binary(name) do
+    request(:delete_stream_processor, %{
+      "Name" => name
     })
   end
 

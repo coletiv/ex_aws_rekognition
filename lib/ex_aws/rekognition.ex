@@ -16,7 +16,7 @@ defmodule ExAws.Rekognition do
     delete_faces: :post,
     delete_stream_processor: :post,
     describe_collection: :post,
-    # describe_stream_processor: :post,
+    describe_stream_processor: :post,
     detect_faces: :post,
     detect_labels: :post,
     detect_moderation_labels: :post,
@@ -110,6 +110,16 @@ defmodule ExAws.Rekognition do
   def describe_collection(collection_id) when is_binary(collection_id) do
     request(:describe_collection, %{
       "CollectionId" => collection_id
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeStreamProcessor.html
+  """
+  @spec describe_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  def describe_stream_processor(name) when is_binary(name) do
+    request(:describe_stream_processor, %{
+      "Name" => name
     })
   end
 

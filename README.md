@@ -20,7 +20,7 @@ You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekogn
 | [DeleteFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteFaces.html)                             | ✅        |
 | [DeleteStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteStreamProcessor.html)         | ✅        |
 | [DescribeCollection](https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeCollection.html)               | ✅        |
-| [DescribeStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeStreamProcessor.html)     | 🚫        |
+| [DescribeStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeStreamProcessor.html)     | ✅        |
 | [DetectFaces](https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectFaces.html)                             | ✅        |
 | [DetectLabels](https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectLabels.html)                           | ✅        |
 | [DetectModerationLabels](https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectModerationLabels.html)       | ✅        |

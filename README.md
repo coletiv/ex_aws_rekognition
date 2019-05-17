@@ -45,7 +45,7 @@ You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekogn
 | [StartFaceSearch](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceSearch.html)                     | ✅        |
 | [StartLabelDetection](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartLabelDetection.html)             | ✅        |
 | [StartPersonTracking](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartPersonTracking.html)             | ✅        |
-| [StartStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartStreamProcessor.html)           | 🚫        |
+| [StartStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_StartStreamProcessor.html)           | ✅        |
 | [StopStreamProcessor](https://docs.aws.amazon.com/rekognition/latest/dg/API_StopStreamProcessor.html)             | 🚫        |
 
 ## Installation

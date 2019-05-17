@@ -40,8 +40,8 @@ defmodule ExAws.Rekognition do
     start_face_detection: :post,
     start_face_search: :post,
     start_label_detection: :post,
-    start_person_tracking: :post
-    # start_stream_processor: :post,
+    start_person_tracking: :post,
+    start_stream_processor: :post
     # stop_stream_processor: :post
   }
 
@@ -610,6 +610,16 @@ defmodule ExAws.Rekognition do
       "JobTag" => job_tag,
       "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
+    })
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartStreamProcessor.html
+  """
+  @spec start_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  def start_stream_processor(name) when is_binary(name) do
+    request(:start_stream_processor, %{
+      "Name" => name
     })
   end
 

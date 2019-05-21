@@ -50,8 +50,7 @@ You can check [AWS Rekognition documentation](https://docs.aws.amazon.com/rekogn
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `ex_aws_rekognition` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `ex_aws_rekognition` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do

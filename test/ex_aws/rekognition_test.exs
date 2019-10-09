@@ -29,7 +29,7 @@ defmodule ExAws.RekognitionTest do
              ExAws.Rekognition.compare_faces(
                source_image_binary,
                target_image_binary,
-               similarity_threshold
+               similarity_threshold: similarity_threshold
              )
              |> ExAws.request()
   end

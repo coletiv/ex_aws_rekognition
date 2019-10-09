@@ -2,70 +2,37 @@ defmodule ExAws.Rekognition do
   @moduledoc """
   Operations on ExAws Rekognition
   """
+  use ExAws.Utils,
+    format_type: :json,
+    non_standard_keys: %{}
+
   alias ExAws.Rekognition.S3Object
   alias ExAws.Rekognition.NotificationChannelObject
 
-  #
   # https://docs.aws.amazon.com/rekognition/latest/dg/API_Operations.html
-  #
-  @actions %{
-    compare_faces: :post,
-    create_collection: :post,
-    create_stream_processor: :post,
-    delete_collection: :post,
-    delete_faces: :post,
-    delete_stream_processor: :post,
-    describe_collection: :post,
-    describe_stream_processor: :post,
-    detect_faces: :post,
-    detect_labels: :post,
-    detect_moderation_labels: :post,
-    detect_text: :post,
-    get_celebrity_info: :post,
-    get_celebrity_recognition: :post,
-    get_content_moderation: :post,
-    get_face_detection: :post,
-    get_face_search: :post,
-    get_label_detection: :post,
-    get_person_tracking: :post,
-    index_faces: :post,
-    list_collections: :post,
-    list_faces: :post,
-    list_stream_processors: :post,
-    recognize_celebrities: :post,
-    search_faces: :post,
-    search_faces_by_image: :post,
-    start_celebrity_recognition: :post,
-    start_content_moderation: :post,
-    start_face_detection: :post,
-    start_face_search: :post,
-    start_label_detection: :post,
-    start_person_tracking: :post,
-    start_stream_processor: :post,
-    stop_stream_processor: :post
-  }
+
+  @type image :: binary() | S3Object.t()
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_CompareFaces.html
 
-  NOTE: When using an S3Object, you may need to insure that
+  NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
   """
-  @spec compare_faces(binary() | S3Object.t(), binary() | S3Object.t(), number()) ::
-          %ExAws.Operation.JSON{}
-  def compare_faces(source_image, target_image, similarity_threshold \\ 80)
-      when is_number(similarity_threshold) do
+  @type compare_faces_opt :: {:similarity_threshold, 0..100}
+  @spec compare_faces(image(), image()) :: ExAws.Operation.JSON.t()
+  @spec compare_faces(image(), image(), list(compare_faces_opt())) :: ExAws.Operation.JSON.t()
+  def compare_faces(source_image, target_image, opts \\ []) do
     request(:compare_faces, %{
-      "SimilarityThreshold" => similarity_threshold,
       "SourceImage" => map_image(source_image),
       "TargetImage" => map_image(target_image)
-    })
+    } |> Map.merge(camelize_keys(opts)))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateCollection.html
   """
-  @spec create_collection(binary()) :: %ExAws.Operation.JSON{}
+  @spec create_collection(binary()) :: ExAws.Operation.JSON.t()
   def create_collection(collection_id) when is_binary(collection_id) do
     request(:create_collection, %{
       "CollectionId" => collection_id
@@ -75,19 +42,11 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateStreamProcessor.html
   """
-  @spec create_stream_processor(binary(), binary(), binary(), binary(), nil | binary(), number()) ::
-          %ExAws.Operation.JSON{}
-  def create_stream_processor(
-        input,
-        output,
-        name,
-        role_arn,
-        collection_id \\ nil,
-        face_match_threshold \\ 70
-      )
-      when is_binary(input) and is_binary(output) and is_binary(name) and is_binary(role_arn) and
-             (is_binary(collection_id) or is_nil(collection_id)) and
-             is_number(face_match_threshold) do
+  @type create_stream_processor_opt :: {:collection_id, binary()} | {:face_match_threshold, 0..100}
+  @spec create_stream_processor(binary(), binary(), binary(), binary()) :: ExAws.Operation.JSON.t()
+  @spec create_stream_processor(binary(), binary(), binary(), binary(), list(create_stream_processor_opt())) :: ExAws.Operation.JSON.t()
+  def create_stream_processor(input, output, name, role_arn, opts \\ [])
+      when is_binary(input) and is_binary(output) and is_binary(name) and is_binary(role_arn) do
     request(:create_stream_processor, %{
       "Input" => %{
         "KinesisVideoStream" => %{
@@ -102,10 +61,7 @@ defmodule ExAws.Rekognition do
       },
       "RoleArn" => role_arn,
       "Settings" => %{
-        "FaceSearch" => %{
-          "CollectionId" => collection_id,
-          "FaceMatchThreshold" => face_match_threshold
-        }
+        "FaceSearch" => camelize_keys(opts)
       }
     })
   end
@@ -113,7 +69,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteCollection.html
   """
-  @spec delete_collection(binary()) :: %ExAws.Operation.JSON{}
+  @spec delete_collection(binary()) :: ExAws.Operation.JSON.t()
   def delete_collection(collection_id) when is_binary(collection_id) do
     request(:delete_collection, %{
       "CollectionId" => collection_id
@@ -123,7 +79,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteFaces.html
   """
-  @spec delete_faces(binary(), list(binary())) :: %ExAws.Operation.JSON{}
+  @spec delete_faces(binary(), list(binary())) :: ExAws.Operation.JSON.t()
   def delete_faces(collection_id, face_ids) when is_binary(collection_id) and is_list(face_ids) do
     request(:delete_faces, %{
       "CollectionId" => collection_id,
@@ -134,7 +90,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteStreamProcessor.html
   """
-  @spec delete_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  @spec delete_stream_processor(binary()) :: ExAws.Operation.JSON.t()
   def delete_stream_processor(name) when is_binary(name) do
     request(:delete_stream_processor, %{
       "Name" => name
@@ -144,7 +100,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeCollection.html
   """
-  @spec describe_collection(binary()) :: %ExAws.Operation.JSON{}
+  @spec describe_collection(binary()) :: ExAws.Operation.JSON.t()
   def describe_collection(collection_id) when is_binary(collection_id) do
     request(:describe_collection, %{
       "CollectionId" => collection_id
@@ -154,7 +110,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeStreamProcessor.html
   """
-  @spec describe_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  @spec describe_stream_processor(binary()) :: ExAws.Operation.JSON.t()
   def describe_stream_processor(name) when is_binary(name) do
     request(:describe_stream_processor, %{
       "Name" => name
@@ -164,56 +120,55 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectFaces.html
 
-  NOTE: When using an S3Object, you may need to insure that
+  NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
   """
-  @spec detect_faces(binary() | S3Object.t(), list(binary())) :: %ExAws.Operation.JSON{}
-  def detect_faces(image, attributes \\ ["DEFAULT"]) when is_list(attributes) do
+  @type detect_faces_opt :: {:attributes, list(binary())}
+  @spec detect_faces(image()) :: ExAws.Operation.JSON.t()
+  @spec detect_faces(image(), list(detect_faces_opt())) :: ExAws.Operation.JSON.t()
+  def detect_faces(image, opts \\ []) do
     request(:detect_faces, %{
-      "Attributes" => attributes,
       "Image" => map_image(image)
-    })
+    } |> Map.merge(camelize_keys(opts)))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectLabels.html
 
-  NOTE: When using an S3Object, you may need to insure that
+  NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
   """
-  @spec detect_labels(binary() | ExAws.Rekognition.S3Object.t(), nil | integer(), number()) ::
-          %ExAws.Operation.JSON{}
-  def detect_labels(image, max_labels \\ nil, min_confidence \\ 55)
-      when (is_integer(max_labels) or is_nil(max_labels)) and is_number(min_confidence) do
+  @type detect_labels_opt :: {:max_labels, non_neg_integer()} | {:min_confidence, 0..100}
+  @spec detect_labels(image()) :: ExAws.Operation.JSON.t()
+  @spec detect_labels(image(), list(detect_labels_opt())) :: ExAws.Operation.JSON.t()
+  def detect_labels(image, opts \\ []) do
     request(:detect_labels, %{
-      "Image" => map_image(image),
-      "MaxLabels" => max_labels,
-      "MinConfidence" => min_confidence
-    })
+      "Image" => map_image(image)
+    } |> Map.merge(camelize_keys(opts)))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectModerationLabels.html
 
-  NOTE: When using an S3Object, you may need to insure that
+  NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
   """
-  @spec detect_moderation_labels(binary() | ExAws.Rekognition.S3Object.t(), number()) ::
-          %ExAws.Operation.JSON{}
-  def detect_moderation_labels(image, min_confidence \\ 50) when is_number(min_confidence) do
+  @type detect_moderation_labels_opt :: {:min_confidence, 0..100}
+  @spec detect_moderation_labels(image()) :: ExAws.Operation.JSON.t()
+  @spec detect_moderation_labels(image(), list(detect_moderation_labels_opt())) :: ExAws.Operation.JSON.t()
+  def detect_moderation_labels(image, opts \\ []) do
     request(:detect_moderation_labels, %{
-      "Image" => map_image(image),
-      "MinConfidence" => min_confidence
-    })
+      "Image" => map_image(image)
+    } |> Map.merge(camelize_keys(opts)))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectText.html
 
-  NOTE: When using an S3Object, you may need to insure that
+  NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
   """
-  @spec detect_text(binary() | S3Object.t()) :: %ExAws.Operation.JSON{}
+  @spec detect_text(image()) :: ExAws.Operation.JSON.t()
   def detect_text(image) do
     request(:detect_text, %{
       "Image" => map_image(image)
@@ -223,221 +178,141 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_IndexFaces.html
 
-  NOTE: When using an S3Object, you may need to insure that
+  NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
   """
-  @spec index_faces(
-          binary(),
-          binary() | ExAws.Rekognition.S3Object.t(),
-          nil | binary(),
-          list(binary()),
-          nil | integer(),
-          :auto | :none
-        ) :: %ExAws.Operation.JSON{}
-  def index_faces(
-        collection_id,
-        image,
-        external_image_id \\ nil,
-        detection_attributes \\ ["DEFAULT"],
-        max_faces \\ 100,
-        quality_filter \\ :auto
-      )
-      when is_binary(collection_id) and
-             (is_binary(external_image_id) or is_nil(external_image_id)) and
-             is_list(detection_attributes) and
-             is_integer(max_faces) and max_faces > 1 and
-             quality_filter in [:auto, :none] do
+  @type index_faces_opt :: {:external_image_id, binary()} | {:detection_attributes, list(binary())} | {:max_faces, pos_integer()} | {:quality_filter, :auto | :none}
+  @spec index_faces(binary(), image()) :: ExAws.Operation.JSON.t()
+  @spec index_faces(binary(), image(), list(index_faces_opt())) :: ExAws.Operation.JSON.t()
+  def index_faces(collection_id, image, opts \\ []) when is_binary(collection_id) do
     request(:index_faces, %{
       "CollectionId" => collection_id,
-      "DetectionAttributes" => detection_attributes,
-      "ExternalImageId" => external_image_id,
       "Image" => map_image(image),
-      "MaxFaces" => max_faces,
-      "QualityFilter" => Atom.to_string(quality_filter) |> String.upcase()
-    })
+    } |> Map.merge(opts |> stringify_enum_opts([:quality_filter]) |> camelize_keys()))
   end
+
+  @type list_opt :: {:max_results, 0..4096} | {:next_token, binary()}
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html
   """
-  @spec list_collections(nil | integer(), nil | binary()) :: %ExAws.Operation.JSON{}
-  def list_collections(max_results \\ nil, next_token \\ nil)
-      when (is_integer(max_results) or is_nil(max_results)) and
-             (is_binary(next_token) or is_nil(next_token)) do
-    request(:list_collections, %{
-      "MaxResults" => max_results,
-      "NextToken" => next_token
-    })
+  @type list_collections_opt :: list_opt()
+  @spec list_collections() :: ExAws.Operation.JSON.t()
+  @spec list_collections(list(list_collections_opt())) :: ExAws.Operation.JSON.t()
+  def list_collections(opts \\ []) do
+    request(:list_collections, camelize_keys(opts))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_ListFaces.html
   """
-  @spec list_faces(binary(), nil | integer(), nil | binary()) :: %ExAws.Operation.JSON{}
-  def list_faces(collection_id, max_results \\ nil, next_token \\ nil)
-      when is_binary(collection_id) and
-             (is_integer(max_results) or is_nil(max_results)) and
-             (is_binary(next_token) or is_nil(next_token)) do
+  @type list_faces_opt :: list_opt()
+  @spec list_faces(binary()) :: ExAws.Operation.JSON.t()
+  @spec list_faces(binary(), list(list_faces_opt())) :: ExAws.Operation.JSON.t()
+  def list_faces(collection_id, opts \\ []) when is_binary(collection_id) do
     request(:list_faces, %{
-      "CollectionId" => collection_id,
-      "MaxResults" => max_results,
-      "NextToken" => next_token
-    })
+      "CollectionId" => collection_id
+    } |> Map.merge(camelize_keys(opts)))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_ListStreamProcessors.html
   """
-  @spec list_stream_processors(pos_integer(), nil | binary()) :: %ExAws.Operation.JSON{}
-  def list_stream_processors(max_results \\ 1000, next_token \\ nil)
-      when is_integer(max_results) and max_results > 0 and
-             (is_binary(next_token) or is_nil(next_token)) do
-    request(:list_stream_processors, %{
-      "MaxResults" => max_results,
-      "NextToken" => next_token
-    })
+  @type list_stream_processors_opt :: list_opt()
+  @spec list_stream_processors() :: ExAws.Operation.JSON.t()
+  @spec list_stream_processors(list(list_stream_processors_opt())) :: ExAws.Operation.JSON.t()
+  def list_stream_processors(opts \\ []) do
+    request(:list_stream_processors, camelize_keys(opts))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityInfo.html
   """
-  @spec get_celebrity_info(binary()) :: %ExAws.Operation.JSON{}
+  @spec get_celebrity_info(binary()) :: ExAws.Operation.JSON.t()
   def get_celebrity_info(id) when is_binary(id) do
     request(:get_celebrity_info, %{
       "Id" => id
     })
   end
 
+  @type get_opt :: {:max_results, pos_integer()} | {:next_token, binary()}
+
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityRecognition.html
   """
-  @spec get_celebrity_recognition(binary(), pos_integer(), nil | binary(), :id | :timestamp) ::
-          %ExAws.Operation.JSON{}
-  def get_celebrity_recognition(job_id, max_results \\ 1000, next_token \\ nil, sort_by \\ :id)
-      when is_binary(job_id) and
-             (is_integer(max_results) and max_results > 0) and
-             (is_binary(next_token) or is_nil(next_token)) and
-             sort_by in [:id, :timestamp] do
+  @type get_celebrity_recognition_opt :: get_opt() | {:sort_by, :id | :timestamp}
+  @spec get_celebrity_recognition(binary()) :: ExAws.Operation.JSON.t()
+  @spec get_celebrity_recognition(binary(), list(get_celebrity_recognition_opt())) :: ExAws.Operation.JSON.t()
+  def get_celebrity_recognition(job_id, opts \\ []) when is_binary(job_id) do
     request(:get_celebrity_recognition, %{
-      "JobId" => job_id,
-      "MaxResults" => max_results,
-      "NextToken" => next_token,
-      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
-    })
+      "JobId" => job_id
+    } |> Map.merge(opts |> stringify_enum_opts([:sort_by]) |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetContentModeration.html
   """
-  @spec get_content_moderation(binary(), pos_integer(), nil | binary(), :name | :timestamp) ::
-          %ExAws.Operation.JSON{}
-  def get_content_moderation(
-        job_id,
-        max_results \\ 1000,
-        next_token \\ nil,
-        sort_by \\ :timestamp
-      )
-      when is_binary(job_id) and
-             (is_integer(max_results) and max_results > 0) and
-             (is_binary(next_token) or is_nil(next_token)) and
-             sort_by in [:name, :timestamp] do
+  @type get_content_moderation_opt :: get_opt() | {:sort_by, :name | :timestamp}
+  @spec get_content_moderation(binary()) :: ExAws.Operation.JSON.t()
+  @spec get_content_moderation(binary(), list(get_content_moderation_opt())) :: ExAws.Operation.JSON.t()
+  def get_content_moderation(job_id, opts \\ []) when is_binary(job_id) do
     request(:get_content_moderation, %{
-      "JobId" => job_id,
-      "MaxResults" => max_results,
-      "NextToken" => next_token,
-      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
-    })
+      "JobId" => job_id
+    } |> Map.merge(opts |> stringify_enum_opts([:sort_by]) |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceDetection.html
   """
-  @spec get_face_detection(binary(), pos_integer(), nil | binary()) :: %ExAws.Operation.JSON{}
-  def get_face_detection(job_id, max_results \\ 1000, next_token \\ nil)
-      when is_binary(job_id) and
-             (is_integer(max_results) and max_results > 0) and
-             (is_binary(next_token) or is_nil(next_token)) do
+  @type get_face_detection_opt :: get_opt()
+  @spec get_face_detection(binary()) :: ExAws.Operation.JSON.t()
+  @spec get_face_detection(binary(), list(get_face_detection_opt())) :: ExAws.Operation.JSON.t()
+  def get_face_detection(job_id, opts \\ []) when is_binary(job_id) do
     request(:get_face_detection, %{
-      "JobId" => job_id,
-      "MaxResults" => max_results,
-      "NextToken" => next_token
-    })
+      "JobId" => job_id
+    } |> Map.merge(camelize_keys(opts)))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceSearch.html
   """
-  @spec get_face_search(binary(), pos_integer(), nil | binary(), :index | :timestamp) ::
-          %ExAws.Operation.JSON{}
-  def get_face_search(
-        job_id,
-        max_results \\ 1000,
-        next_token \\ nil,
-        sort_by \\ :timestamp
-      )
-      when is_binary(job_id) and
-             (is_integer(max_results) and max_results > 0) and
-             (is_binary(next_token) or is_nil(next_token)) and
-             sort_by in [:index, :timestamp] do
+  @type get_face_search_opt :: get_opt() | {:sort_by, :index | :timestamp}
+  @spec get_face_search(binary()) :: ExAws.Operation.JSON.t()
+  @spec get_face_search(binary(), list(get_face_search_opt())) :: ExAws.Operation.JSON.t()
+  def get_face_search(job_id, opts \\ []) when is_binary(job_id) do
     request(:get_face_search, %{
-      "JobId" => job_id,
-      "MaxResults" => max_results,
-      "NextToken" => next_token,
-      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
-    })
+      "JobId" => job_id
+    } |> Map.merge(opts |> stringify_enum_opts([:sort_by]) |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetLabelDetection.html
   """
-  @spec get_label_detection(binary(), pos_integer(), nil | binary(), :name | :timestamp) ::
-          %ExAws.Operation.JSON{}
-  def get_label_detection(
-        job_id,
-        max_results \\ 1000,
-        next_token \\ nil,
-        sort_by \\ :timestamp
-      )
-      when is_binary(job_id) and
-             (is_integer(max_results) and max_results > 0) and
-             (is_binary(next_token) or is_nil(next_token)) and
-             sort_by in [:name, :timestamp] do
+  @type get_label_detection_opt :: get_opt() | {:sort_by, :name | :timestamp}
+  @spec get_label_detection(binary()) :: ExAws.Operation.JSON.t()
+  @spec get_label_detection(binary(), list(get_label_detection_opt())) :: ExAws.Operation.JSON.t()
+  def get_label_detection(job_id, opts \\ []) when is_binary(job_id) do
     request(:get_label_detection, %{
-      "JobId" => job_id,
-      "MaxResults" => max_results,
-      "NextToken" => next_token,
-      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
-    })
+      "JobId" => job_id
+    } |> Map.merge(opts |> stringify_enum_opts([:sort_by]) |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_GetPersonTracking.html
   """
-  @spec get_person_tracking(binary(), pos_integer(), nil | binary(), :index | :timestamp) ::
-          %ExAws.Operation.JSON{}
-  def get_person_tracking(
-        job_id,
-        max_results \\ 1000,
-        next_token \\ nil,
-        sort_by \\ :timestamp
-      )
-      when is_binary(job_id) and
-             (is_integer(max_results) and max_results > 0) and
-             (is_binary(next_token) or is_nil(next_token)) and
-             sort_by in [:index, :timestamp] do
+  @type get_person_tracking_opt :: get_opt() | {:sort_by, :index | :timestamp}
+  @spec get_person_tracking(binary()) :: ExAws.Operation.JSON.t()
+  @spec get_person_tracking(binary(), list(get_person_tracking_opt())) :: ExAws.Operation.JSON.t()
+  def get_person_tracking(job_id, opts \\ []) when is_binary(job_id) do
     request(:get_person_tracking, %{
-      "JobId" => job_id,
-      "MaxResults" => max_results,
-      "NextToken" => next_token,
-      "SortBy" => Atom.to_string(sort_by) |> String.upcase()
-    })
+      "JobId" => job_id
+    } |> Map.merge(opts |> stringify_enum_opts([:sort_by]) |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_RecognizeCelebrities.html
   """
-  @spec recognize_celebrities(binary() | ExAws.Rekognition.S3Object.t()) ::
-          %ExAws.Operation.JSON{}
+  @spec recognize_celebrities(image()) :: ExAws.Operation.JSON.t()
   def recognize_celebrities(image) do
     request(:recognize_celebrities, %{
       "Image" => map_image(image)
@@ -447,214 +322,113 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFaces.html
   """
-  @spec search_faces(binary(), binary(), number(), integer()) :: %ExAws.Operation.JSON{}
-  def search_faces(collection_id, face_id, face_match_threshold \\ 80, max_faces \\ 100)
-      when is_binary(collection_id) and is_binary(face_id) and
-             is_number(face_match_threshold) and is_integer(max_faces) do
+  @type search_faces_opt :: {:face_match_threshold, 0..100} | {:max_faces, 1..4096}
+  @spec search_faces(binary(), binary()) :: ExAws.Operation.JSON.t()
+  @spec search_faces(binary(), binary(), list(search_faces_opt())) :: ExAws.Operation.JSON.t()
+  def search_faces(collection_id, face_id, opts \\ []) when is_binary(collection_id) and is_binary(face_id) do
     request(:search_faces, %{
       "CollectionId" => collection_id,
-      "FaceId" => face_id,
-      "FaceMatchThreshold" => face_match_threshold,
-      "MaxFaces" => max_faces
-    })
+      "FaceId" => face_id
+    } |> Map.merge(camelize_keys(opts)))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFacesByImage.html
 
-  NOTE: When using an S3Object, you may need to insure that
-  the S3 uses the same region as Rekognition
+  NOTE: When using an S3Object, you may need to ensure that the S3 uses the
+  same region as Rekognition.
   """
-  @spec search_faces_by_image(
-          binary(),
-          binary() | ExAws.Rekognition.S3Object.t(),
-          number(),
-          integer()
-        ) :: %ExAws.Operation.JSON{}
-  def search_faces_by_image(collection_id, image, face_match_threshold \\ 80, max_faces \\ 100)
-      when is_binary(collection_id) and
-             is_number(face_match_threshold) and is_integer(max_faces) do
+  @type search_faces_by_image_opt :: search_faces_opt()
+  @spec search_faces_by_image(binary(), image()) :: ExAws.Operation.JSON.t()
+  @spec search_faces_by_image(binary(), image(), list(search_faces_by_image_opt())) :: ExAws.Operation.JSON.t()
+  def search_faces_by_image(collection_id, image, opts \\ []) when is_binary(collection_id) do
     request(:search_faces_by_image, %{
       "CollectionId" => collection_id,
-      "Image" => map_image(image),
-      "FaceMatchThreshold" => face_match_threshold,
-      "MaxFaces" => max_faces
-    })
+      "Image" => map_image(image)
+    } |> Map.merge(camelize_keys(opts)))
   end
+
+  @type start_opt :: {:client_request_token, binary()} | {:job_tag, binary()} | {:notification_channel, NotificationChannelObject.t()}
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_StartCelebrityRecognition.html
   """
-  @spec start_celebrity_recognition(
-          ExAws.Rekognition.S3Object.t(),
-          nil | binary(),
-          nil | binary(),
-          nil | ExAws.Rekognition.NotificationChannelObject.t()
-        ) :: %ExAws.Operation.JSON{}
-  def start_celebrity_recognition(
-        video,
-        client_request_token \\ nil,
-        job_tag \\ nil,
-        notification_channel \\ nil
-      )
-      when (is_binary(client_request_token) or is_nil(client_request_token)) and
-             (is_binary(job_tag) or is_nil(job_tag)) do
+  @type start_celebrity_recognition_opt :: start_opt()
+  @spec start_celebrity_recognition(S3Object.t()) :: ExAws.Operation.JSON.t()
+  @spec start_celebrity_recognition(S3Object.t(), list(start_celebrity_recognition_opt())) :: ExAws.Operation.JSON.t()
+  def start_celebrity_recognition(video, opts \\ []) do
     request(:start_celebrity_recognition, %{
-      "ClientRequestToken" => client_request_token,
-      "JobTag" => job_tag,
-      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
-    })
+    } |> Map.merge(opts |> map_notification_channel() |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_StartContentModeration.html
   """
-  @spec start_content_moderation(
-          ExAws.Rekognition.S3Object.t(),
-          number(),
-          nil | binary(),
-          nil | binary(),
-          nil | ExAws.Rekognition.NotificationChannelObject.t()
-        ) :: %ExAws.Operation.JSON{}
-  def start_content_moderation(
-        video,
-        min_confidence \\ 55,
-        client_request_token \\ nil,
-        job_tag \\ nil,
-        notification_channel \\ nil
-      )
-      when is_number(min_confidence) and
-             (is_binary(client_request_token) or is_nil(client_request_token)) and
-             (is_binary(job_tag) or is_nil(job_tag)) do
+  @type start_content_moderation_opt :: start_opt() | {:min_confidence, 0..100}
+  @spec start_content_moderation(S3Object.t()) :: ExAws.Operation.JSON.t()
+  @spec start_content_moderation(S3Object.t(), list(start_content_moderation_opt())) :: ExAws.Operation.JSON.t()
+  def start_content_moderation(video, opts \\ []) do
     request(:start_content_moderation, %{
-      "ClientRequestToken" => client_request_token,
-      "JobTag" => job_tag,
-      "MinConfidence" => min_confidence,
-      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
-    })
+    } |> Map.merge(opts |> map_notification_channel() |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceDetection.html
   """
-  @spec start_face_detection(
-          ExAws.Rekognition.S3Object.t(),
-          :default | :all,
-          nil | binary(),
-          nil | binary(),
-          nil | ExAws.Rekognition.NotificationChannelObject.t()
-        ) :: %ExAws.Operation.JSON{}
-  def start_face_detection(
-        video,
-        face_attributes \\ :default,
-        client_request_token \\ nil,
-        job_tag \\ nil,
-        notification_channel \\ nil
-      )
-      when face_attributes in [:default, :all] and
-             (is_binary(client_request_token) or is_nil(client_request_token)) and
-             (is_binary(job_tag) or is_nil(job_tag)) do
+  @type start_face_detection_opt :: start_opt() | {:face_attributes, :default | :all}
+  @spec start_face_detection(S3Object.t()) :: ExAws.Operation.JSON.t()
+  @spec start_face_detection(S3Object.t(), list(start_face_detection_opt())) :: ExAws.Operation.JSON.t()
+  def start_face_detection(video, opts \\ []) do
     request(:start_face_detection, %{
-      "ClientRequestToken" => client_request_token,
-      "FaceAttributes" => Atom.to_string(face_attributes) |> String.upcase(),
-      "JobTag" => job_tag,
-      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
-    })
+    } |> Map.merge(opts |> map_notification_channel()
+                        |> stringify_enum_opts([:face_attributes])
+                        |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceSearch.html
   """
-  @spec start_face_search(
-          ExAws.Rekognition.S3Object.t(),
-          binary(),
-          number(),
-          nil | binary(),
-          nil | binary(),
-          nil | ExAws.Rekognition.NotificationChannelObject.t()
-        ) :: %ExAws.Operation.JSON{}
-  def start_face_search(
-        video,
-        collection_id,
-        face_match_threshold \\ 80,
-        client_request_token \\ nil,
-        job_tag \\ nil,
-        notification_channel \\ nil
-      )
-      when is_binary(collection_id) and is_number(face_match_threshold) and
-             (is_binary(client_request_token) or is_nil(client_request_token)) and
-             (is_binary(job_tag) or is_nil(job_tag)) do
+  @type start_face_search_opt :: start_opt() | {:face_match_threshold, 0..100}
+  @spec start_face_search(S3Object.t(), binary()) :: ExAws.Operation.JSON.t()
+  @spec start_face_search(S3Object.t(), binary(), list(start_face_search_opt())) :: ExAws.Operation.JSON.t()
+  def start_face_search(video, collection_id, opts \\ []) when is_binary(collection_id) do
     request(:start_face_search, %{
-      "ClientRequestToken" => client_request_token,
       "CollectionId" => collection_id,
-      "FaceMatchThreshold" => face_match_threshold,
-      "JobTag" => job_tag,
-      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
-    })
+    } |> Map.merge(opts |> map_notification_channel() |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_StartLabelDetection.html
   """
-  @spec start_label_detection(
-          ExAws.Rekognition.S3Object.t(),
-          number(),
-          nil | binary(),
-          nil | binary(),
-          nil | ExAws.Rekognition.NotificationChannelObject.t()
-        ) :: %ExAws.Operation.JSON{}
-  def start_label_detection(
-        video,
-        min_confidence \\ 50,
-        client_request_token \\ nil,
-        job_tag \\ nil,
-        notification_channel \\ nil
-      )
-      when is_number(min_confidence) and
-             (is_binary(client_request_token) or is_nil(client_request_token)) and
-             (is_binary(job_tag) or is_nil(job_tag)) do
+  @type start_label_detection_opt :: start_opt() | {:min_confidence, 0..100}
+  @spec start_label_detection(S3Object.t()) :: ExAws.Operation.JSON.t()
+  @spec start_label_detection(S3Object.t(), list(start_label_detection_opt())) :: ExAws.Operation.JSON.t()
+  def start_label_detection(video, opts \\ []) do
     request(:start_label_detection, %{
-      "ClientRequestToken" => client_request_token,
-      "JobTag" => job_tag,
-      "MinConfidence" => min_confidence,
-      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
-    })
+    } |> Map.merge(opts |> map_notification_channel() |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_StartPersonTracking.html
   """
-  @spec start_person_tracking(
-          ExAws.Rekognition.S3Object.t(),
-          nil | binary(),
-          nil | binary(),
-          nil | ExAws.Rekognition.NotificationChannelObject.t()
-        ) :: %ExAws.Operation.JSON{}
-  def start_person_tracking(
-        video,
-        client_request_token \\ nil,
-        job_tag \\ nil,
-        notification_channel \\ nil
-      )
-      when (is_binary(client_request_token) or is_nil(client_request_token)) and
-             (is_binary(job_tag) or is_nil(job_tag)) do
+  @type start_person_tracking_opt :: start_opt()
+  @spec start_person_tracking(S3Object.t()) :: ExAws.Operation.JSON.t()
+  @spec start_person_tracking(S3Object.t(), list(start_person_tracking_opt())) :: ExAws.Operation.JSON.t()
+  def start_person_tracking(video, opts \\ []) do
     request(:start_celebrity_recognition, %{
-      "ClientRequestToken" => client_request_token,
-      "JobTag" => job_tag,
-      "NotificationChannel" => NotificationChannelObject.map(notification_channel),
       "Video" => S3Object.map(video)
-    })
+    } |> Map.merge(opts |> map_notification_channel() |> camelize_keys()))
   end
 
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_StartStreamProcessor.html
   """
-  @spec start_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  @spec start_stream_processor(binary()) :: ExAws.Operation.JSON.t()
   def start_stream_processor(name) when is_binary(name) do
     request(:start_stream_processor, %{
       "Name" => name
@@ -664,7 +438,7 @@ defmodule ExAws.Rekognition do
   @doc """
   https://docs.aws.amazon.com/rekognition/latest/dg/API_StopStreamProcessor.html
   """
-  @spec stop_stream_processor(binary()) :: %ExAws.Operation.JSON{}
+  @spec stop_stream_processor(binary()) :: ExAws.Operation.JSON.t()
   def stop_stream_processor(name) when is_binary(name) do
     request(:stop_stream_processor, %{
       "Name" => name
@@ -681,9 +455,24 @@ defmodule ExAws.Rekognition do
     S3Object.map(object)
   end
 
-  defp request(action, data) do
-    http_method = @actions |> Map.fetch!(action)
+  defp stringify_enum_opts(opts, keys) do
+    {enum_opts, opts} = Keyword.split(opts, keys)
+    opts ++ Enum.map(enum_opts, fn {k, v} -> {k, stringify_enum(v)} end)
+  end
 
+  defp stringify_enum(value) do
+    value |> Atom.to_string() |> String.upcase()
+  end
+
+  defp map_notification_channel(opts) do
+    if value = opts[:notification_channel] do
+      Keyword.replace!(opts, :notification_channel, NotificationChannelObject.map(value))
+    else
+      opts
+    end
+  end
+
+  defp request(action, data) do
     operation =
       action
       |> Atom.to_string()
@@ -695,7 +484,6 @@ defmodule ExAws.Rekognition do
     ]
 
     ExAws.Operation.JSON.new(:rekognition, %{
-      http_method: http_method,
       data: data,
       headers: headers
     })

@@ -455,14 +455,9 @@ defmodule ExAws.Rekognition do
     S3Object.map(object)
   end
 
-  # NOTE: Does not preserve order, unlike the name "map" might imply
-  defp kw_map(kwl, keys, fun) do
-    {split_kws, kws} = Keyword.split(kwl, keys)
-    kws ++ Enum.map(split_kws, fun)
-  end
-
   defp stringify_enum_opts(opts, keys) do
-    kw_map(opts, keys, &stringify_enum/1)
+    {enum_opts, opts} = Keyword.split(opts, keys)
+    opts ++ Enum.map(enum_opts, fn {k, v} -> {k, stringify_enum(v)} end)
   end
 
   defp stringify_enum(value) do
@@ -470,7 +465,11 @@ defmodule ExAws.Rekognition do
   end
 
   defp map_notification_channel(opts) do
-    kw_map(opts, [:notification_channel], &NotificationChannelObject.map/1)
+    if value = opts[:notification_channel] do
+      Keyword.replace!(opts, :notification_channel, NotificationChannelObject.map(value))
+    else
+      opts
+    end
   end
 
   defp request(action, data) do

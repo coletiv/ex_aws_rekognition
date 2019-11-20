@@ -55,7 +55,7 @@ The package can be installed by adding `ex_aws_rekognition` to your list of depe
 ```elixir
 def deps do
   [
-    {:ex_aws_rekognition, "~> 0.5.0"}
+    {:ex_aws_rekognition, "~> 0.6.0"}
   ]
 end
 ```

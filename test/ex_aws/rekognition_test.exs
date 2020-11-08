@@ -2,144 +2,312 @@ defmodule ExAws.RekognitionTest do
   use ExUnit.Case, async: true
   doctest ExAws.Rekognition
 
-  #
-  # Usage example - to run this test you need an existent
-  # s3 bucket with an image.
-  #
-  # alias ExAws.Rekognition.S3Object
-  #
-  # test "detect text - s3 image" do
-  #   s3_object = %S3Object{
-  #     bucket: "test-bucket",
-  #     name: "test.jpg"
-  #   }
-  #
-  #   assert {:ok, %{"TextDetections" => _}} =
-  #     ExAws.Rekognition.detect_text(s3_object)
-  #     |> ExAws.request(region: "us-east-2")
-  # end
-  #
-
   test "compare faces - image" do
     similarity_threshold = 0.0
     {:ok, source_image_binary} = File.read("test/assets/face_source.jpeg")
     {:ok, target_image_binary} = File.read("test/assets/face_target.jpeg")
 
-    assert {:ok, %{"FaceMatches" => _}} =
-             ExAws.Rekognition.compare_faces(
-               source_image_binary,
-               target_image_binary,
-               similarity_threshold: similarity_threshold
-             )
-             |> ExAws.request()
+    operation_json =
+      ExAws.Rekognition.compare_faces(
+        source_image_binary,
+        target_image_binary,
+        similarity_threshold: similarity_threshold
+      )
+
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{
+               "SimilarityThreshold" => 0.0,
+               "SourceImage" => %{
+                 "Bytes" => _
+               },
+               "TargetImage" => %{
+                 "Bytes" => _
+               }
+             },
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.CompareFaces"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
   end
 
   test "detect faces - image" do
     {:ok, image_binary} = File.read("test/assets/face_source.jpeg")
 
-    assert {:ok, %{"FaceDetails" => _}} =
-             ExAws.Rekognition.detect_faces(image_binary)
-             |> ExAws.request()
+    operation_json = ExAws.Rekognition.detect_faces(image_binary)
+
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"Image" => %{"Bytes" => _}},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.DetectFaces"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
   end
 
   test "detect text - image" do
     {:ok, image_binary} = File.read("test/assets/test.jpg")
 
-    assert {:ok, %{"TextDetections" => _}} =
-             ExAws.Rekognition.detect_text(image_binary)
-             |> ExAws.request(region: "us-east-2")
+    operation_json = ExAws.Rekognition.detect_text(image_binary)
+
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"Image" => %{"Bytes" => _}},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.DetectText"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
   end
 
   test "create/describe/list/delete collection" do
     collection_id = "ex_aws_rekognition_test_collection"
 
-    assert {:ok,
-            %{
-              "CollectionArn" => _,
-              "FaceModelVersion" => _,
-              "StatusCode" => 200
-            }} = ExAws.Rekognition.create_collection(collection_id) |> ExAws.request()
+    operation_json = ExAws.Rekognition.create_collection(collection_id)
 
-    assert {:ok,
-            %{
-              "CollectionARN" => _,
-              "CreationTimestamp" => _,
-              "FaceCount" => _,
-              "FaceModelVersion" => _
-            }} = ExAws.Rekognition.describe_collection(collection_id) |> ExAws.request()
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"CollectionId" => ^collection_id},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.CreateCollection"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
 
-    assert {:ok, %{"CollectionIds" => _, "FaceModelVersions" => _}} =
-             ExAws.Rekognition.list_collections() |> ExAws.request()
+    operation_json = ExAws.Rekognition.describe_collection(collection_id)
 
-    assert {:ok, %{"StatusCode" => 200}} =
-             ExAws.Rekognition.delete_collection(collection_id) |> ExAws.request()
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"CollectionId" => ^collection_id},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.DescribeCollection"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
+
+    operation_json = ExAws.Rekognition.list_collections()
+
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.ListCollections"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
+
+    operation_json = ExAws.Rekognition.delete_collection(collection_id)
+
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"CollectionId" => ^collection_id},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.DeleteCollection"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
   end
 
   test "index/list/search_by_image faces" do
     collection_id = "ex_aws_rekognition_test_collection"
+    operation_json = ExAws.Rekognition.create_collection(collection_id)
 
-    assert {:ok,
-            %{
-              "CollectionArn" => _,
-              "FaceModelVersion" => _,
-              "StatusCode" => 200
-            }} = ExAws.Rekognition.create_collection(collection_id) |> ExAws.request()
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"CollectionId" => ^collection_id},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.CreateCollection"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
 
     {:ok, image_binary} = File.read("test/assets/face_target.jpeg")
 
-    assert {:ok,
-            %{
-              "FaceModelVersion" => _,
-              "FaceRecords" => _,
-              "UnindexedFaces" => _
-            }} = ExAws.Rekognition.index_faces(collection_id, image_binary) |> ExAws.request()
+    operation_json = ExAws.Rekognition.index_faces(collection_id, image_binary)
 
-    assert {:ok,
-            %{
-              "FaceModelVersion" => _,
-              "Faces" => _
-            }} = ExAws.Rekognition.list_faces(collection_id) |> ExAws.request()
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{
+               "CollectionId" => ^collection_id,
+               "Image" => %{"Bytes" => _}
+             },
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.IndexFaces"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
+
+    operation_json = ExAws.Rekognition.list_faces(collection_id)
+
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"CollectionId" => ^collection_id},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.ListFaces"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
 
     {:ok, image_binary} = File.read("test/assets/face_source.jpeg")
 
-    assert {:ok,
-            %{
-              "FaceMatches" => _,
-              "FaceModelVersion" => _,
-              "SearchedFaceBoundingBox" => _,
-              "SearchedFaceConfidence" => _
-            }} =
-             ExAws.Rekognition.search_faces_by_image(collection_id, image_binary)
-             |> ExAws.request()
+    operation_json = ExAws.Rekognition.search_faces_by_image(collection_id, image_binary)
 
-    assert {:ok, %{"StatusCode" => 200}} =
-             ExAws.Rekognition.delete_collection(collection_id) |> ExAws.request()
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{
+               "CollectionId" => ^collection_id,
+               "Image" => %{"Bytes" => _}
+             },
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.SearchFacesByImage"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
+
+    operation_json = ExAws.Rekognition.delete_collection(collection_id)
+
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"CollectionId" => ^collection_id},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.DeleteCollection"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
   end
 
   test "recognize celebrities" do
     {:ok, image_binary} = File.read("test/assets/face_target.jpeg")
 
-    assert {:ok,
-            %{
-              "CelebrityFaces" => _,
-              "OrientationCorrection" => _,
-              "UnrecognizedFaces" => _
-            }} = ExAws.Rekognition.recognize_celebrities(image_binary) |> ExAws.request()
+    operation_json = ExAws.Rekognition.recognize_celebrities(image_binary)
+
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"Image" => %{"Bytes" => _}},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.RecognizeCelebrities"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
   end
 
   test "detect labels/moderation labels" do
     {:ok, image_binary} = File.read("test/assets/face_target.jpeg")
 
-    assert {:ok,
-            %{
-              "LabelModelVersion" => _,
-              "Labels" => _
-            }} = ExAws.Rekognition.detect_labels(image_binary) |> ExAws.request()
+    operation_json = ExAws.Rekognition.detect_labels(image_binary)
 
-    assert {:ok,
-            %{
-              "ModerationLabels" => _,
-              "ModerationModelVersion" => _
-            }} = ExAws.Rekognition.detect_moderation_labels(image_binary) |> ExAws.request()
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{"Image" => %{"Bytes" => _}},
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.DetectLabels"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
+
+    operation_json = ExAws.Rekognition.detect_moderation_labels(image_binary)
+
+    assert %ExAws.Operation.JSON{
+             before_request: nil,
+             data: %{
+               "Image" => %{"Bytes" => _}
+             },
+             headers: [
+               {"content-type", "application/x-amz-json-1.1"},
+               {"x-amz-target", "RekognitionService.DetectModerationLabels"}
+             ],
+             http_method: :post,
+             params: %{},
+             parser: _,
+             path: "/",
+             service: :rekognition,
+             stream_builder: nil
+           } = operation_json
   end
 end

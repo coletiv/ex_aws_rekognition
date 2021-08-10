@@ -60,4 +60,17 @@ def deps do
 end
 ```
 
-Documentation can be found at [https://hexdocs.pm/ex_aws_rekognition/ExAws.Rekognition.html](https://hexdocs.pm/ex_aws_rekognition/ExAws.Rekognition.html).
+## Usage
+```elixir
+  {:ok, source_image_binary} = File.read("path/to/face_source.jpeg")
+  {:ok, target_image_binary} = File.read("path/to/face_target.jpeg")
+
+  ExAws.Rekognition.compare_faces(
+    source_image_binary,
+    target_image_binary,
+    similarity_threshold: 0.5
+  )
+  |> ExAws.request()
+```
+
+Complete documentation can be found at [https://hexdocs.pm/ex_aws_rekognition/ExAws.Rekognition.html](https://hexdocs.pm/ex_aws_rekognition/ExAws.Rekognition.html).

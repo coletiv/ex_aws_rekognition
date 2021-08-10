@@ -1,6 +1,7 @@
 defmodule ExAws.RekognitionTest do
   use ExUnit.Case, async: true
   doctest ExAws.Rekognition
+  @moduletag :external
 
   #
   # Usage example - to run this test you need an existent

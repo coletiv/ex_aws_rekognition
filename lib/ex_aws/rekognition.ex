@@ -9,12 +9,12 @@ defmodule ExAws.Rekognition do
   alias ExAws.Rekognition.S3Object
   alias ExAws.Rekognition.NotificationChannelObject
 
-  # https://docs.aws.amazon.com/rekognition/latest/dg/API_Operations.html
+  # https://docs.aws.amazon.com/rekognition/latest/APIReference/API_Operations.html
 
   @type image :: binary() | S3Object.t()
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_CompareFaces.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CompareFaces.html
 
   NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
@@ -30,7 +30,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateCollection.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateCollection.html
   """
   @spec create_collection(binary()) :: ExAws.Operation.JSON.t()
   def create_collection(collection_id) when is_binary(collection_id) do
@@ -40,7 +40,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_CreateStreamProcessor.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateStreamProcessor.html
   """
   @type create_stream_processor_opt :: {:collection_id, binary()} | {:face_match_threshold, 0..100}
   @spec create_stream_processor(binary(), binary(), binary(), binary()) :: ExAws.Operation.JSON.t()
@@ -67,7 +67,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteCollection.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteCollection.html
   """
   @spec delete_collection(binary()) :: ExAws.Operation.JSON.t()
   def delete_collection(collection_id) when is_binary(collection_id) do
@@ -77,7 +77,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteFaces.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteFaces.html
   """
   @spec delete_faces(binary(), list(binary())) :: ExAws.Operation.JSON.t()
   def delete_faces(collection_id, face_ids) when is_binary(collection_id) and is_list(face_ids) do
@@ -88,7 +88,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DeleteStreamProcessor.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DeleteStreamProcessor.html
   """
   @spec delete_stream_processor(binary()) :: ExAws.Operation.JSON.t()
   def delete_stream_processor(name) when is_binary(name) do
@@ -98,7 +98,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeCollection.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeCollection.html
   """
   @spec describe_collection(binary()) :: ExAws.Operation.JSON.t()
   def describe_collection(collection_id) when is_binary(collection_id) do
@@ -108,7 +108,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DescribeStreamProcessor.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DescribeStreamProcessor.html
   """
   @spec describe_stream_processor(binary()) :: ExAws.Operation.JSON.t()
   def describe_stream_processor(name) when is_binary(name) do
@@ -118,7 +118,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectFaces.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectFaces.html
 
   NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
@@ -133,7 +133,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectLabels.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectLabels.html
 
   NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
@@ -148,7 +148,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectModerationLabels.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectModerationLabels.html
 
   NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
@@ -163,7 +163,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_DetectText.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectText.html
 
   NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
@@ -176,7 +176,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_IndexFaces.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_IndexFaces.html
 
   NOTE: When using an S3Object, you may need to ensure that
   the S3 uses the same region as Rekognition
@@ -194,7 +194,7 @@ defmodule ExAws.Rekognition do
   @type list_opt :: {:max_results, 0..4096} | {:next_token, binary()}
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_ListCollections.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListCollections.html
   """
   @type list_collections_opt :: list_opt()
   @spec list_collections() :: ExAws.Operation.JSON.t()
@@ -204,7 +204,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_ListFaces.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListFaces.html
   """
   @type list_faces_opt :: list_opt()
   @spec list_faces(binary()) :: ExAws.Operation.JSON.t()
@@ -216,7 +216,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_ListStreamProcessors.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_ListStreamProcessors.html
   """
   @type list_stream_processors_opt :: list_opt()
   @spec list_stream_processors() :: ExAws.Operation.JSON.t()
@@ -226,7 +226,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityInfo.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetCelebrityInfo.html
   """
   @spec get_celebrity_info(binary()) :: ExAws.Operation.JSON.t()
   def get_celebrity_info(id) when is_binary(id) do
@@ -238,7 +238,7 @@ defmodule ExAws.Rekognition do
   @type get_opt :: {:max_results, pos_integer()} | {:next_token, binary()}
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetCelebrityRecognition.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetCelebrityRecognition.html
   """
   @type get_celebrity_recognition_opt :: get_opt() | {:sort_by, :id | :timestamp}
   @spec get_celebrity_recognition(binary()) :: ExAws.Operation.JSON.t()
@@ -250,7 +250,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetContentModeration.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetContentModeration.html
   """
   @type get_content_moderation_opt :: get_opt() | {:sort_by, :name | :timestamp}
   @spec get_content_moderation(binary()) :: ExAws.Operation.JSON.t()
@@ -262,7 +262,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceDetection.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetFaceDetection.html
   """
   @type get_face_detection_opt :: get_opt()
   @spec get_face_detection(binary()) :: ExAws.Operation.JSON.t()
@@ -274,7 +274,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetFaceSearch.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetFaceSearch.html
   """
   @type get_face_search_opt :: get_opt() | {:sort_by, :index | :timestamp}
   @spec get_face_search(binary()) :: ExAws.Operation.JSON.t()
@@ -286,7 +286,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetLabelDetection.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetLabelDetection.html
   """
   @type get_label_detection_opt :: get_opt() | {:sort_by, :name | :timestamp}
   @spec get_label_detection(binary()) :: ExAws.Operation.JSON.t()
@@ -298,7 +298,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_GetPersonTracking.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetPersonTracking.html
   """
   @type get_person_tracking_opt :: get_opt() | {:sort_by, :index | :timestamp}
   @spec get_person_tracking(binary()) :: ExAws.Operation.JSON.t()
@@ -310,7 +310,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_RecognizeCelebrities.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_RecognizeCelebrities.html
   """
   @spec recognize_celebrities(image()) :: ExAws.Operation.JSON.t()
   def recognize_celebrities(image) do
@@ -320,7 +320,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFaces.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_SearchFaces.html
   """
   @type search_faces_opt :: {:face_match_threshold, 0..100} | {:max_faces, 1..4096}
   @spec search_faces(binary(), binary()) :: ExAws.Operation.JSON.t()
@@ -333,7 +333,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_SearchFacesByImage.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_SearchFacesByImage.html
 
   NOTE: When using an S3Object, you may need to ensure that the S3 uses the
   same region as Rekognition.
@@ -351,7 +351,7 @@ defmodule ExAws.Rekognition do
   @type start_opt :: {:client_request_token, binary()} | {:job_tag, binary()} | {:notification_channel, NotificationChannelObject.t()}
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartCelebrityRecognition.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartCelebrityRecognition.html
   """
   @type start_celebrity_recognition_opt :: start_opt()
   @spec start_celebrity_recognition(S3Object.t()) :: ExAws.Operation.JSON.t()
@@ -363,7 +363,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartContentModeration.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartContentModeration.html
   """
   @type start_content_moderation_opt :: start_opt() | {:min_confidence, 0..100}
   @spec start_content_moderation(S3Object.t()) :: ExAws.Operation.JSON.t()
@@ -375,7 +375,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceDetection.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartFaceDetection.html
   """
   @type start_face_detection_opt :: start_opt() | {:face_attributes, :default | :all}
   @spec start_face_detection(S3Object.t()) :: ExAws.Operation.JSON.t()
@@ -389,7 +389,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartFaceSearch.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartFaceSearch.html
   """
   @type start_face_search_opt :: start_opt() | {:face_match_threshold, 0..100}
   @spec start_face_search(S3Object.t(), binary()) :: ExAws.Operation.JSON.t()
@@ -402,7 +402,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartLabelDetection.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartLabelDetection.html
   """
   @type start_label_detection_opt :: start_opt() | {:min_confidence, 0..100}
   @spec start_label_detection(S3Object.t()) :: ExAws.Operation.JSON.t()
@@ -414,7 +414,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartPersonTracking.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartPersonTracking.html
   """
   @type start_person_tracking_opt :: start_opt()
   @spec start_person_tracking(S3Object.t()) :: ExAws.Operation.JSON.t()
@@ -426,7 +426,7 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_StartStreamProcessor.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StartStreamProcessor.html
   """
   @spec start_stream_processor(binary()) :: ExAws.Operation.JSON.t()
   def start_stream_processor(name) when is_binary(name) do
@@ -436,12 +436,43 @@ defmodule ExAws.Rekognition do
   end
 
   @doc """
-  https://docs.aws.amazon.com/rekognition/latest/dg/API_StopStreamProcessor.html
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_StopStreamProcessor.html
   """
   @spec stop_stream_processor(binary()) :: ExAws.Operation.JSON.t()
   def stop_stream_processor(name) when is_binary(name) do
     request(:stop_stream_processor, %{
       "Name" => name
+    })
+  end
+
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_CreateFaceLivenessSession.html
+  """
+
+  @type create_face_liveness_session_settings_output_config_opt ::
+          {:s3_bucket, binary()} | {:s3_key_prefix, binary()}
+  @type create_face_liveness_session_settings_opt ::
+          {:audit_images_limit, 0..4}
+          | {:output_config, create_face_liveness_session_settings_output_config_opt()}
+  @type create_face_liveness_session_opt ::
+          {:client_request_token, binary()}
+          | {:kms_key_id, binary()}
+          | {:settings, create_face_liveness_session_settings_opt()}
+
+  @spec create_face_liveness_session() :: ExAws.Operation.JSON.t()
+  @spec create_face_liveness_session(list(create_face_liveness_session_opt)) :: ExAws.Operation.JSON.t()
+  def create_face_liveness_session(opts \\ []) do
+    request(:get_face_liveness_session_results, camelize_keys(opts))
+  end
+
+  @doc """
+  https://docs.aws.amazon.com/rekognition/latest/APIReference/API_GetFaceLivenessSessionResults.html
+  """
+  @spec get_face_liveness_session_results(binary()) :: ExAws.Operation.JSON.t()
+  def get_face_liveness_session_results(session_id) do
+    request(:get_face_liveness_session_results, %{
+      "SessionId" => session_id
     })
   end
 

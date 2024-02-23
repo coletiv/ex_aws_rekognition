@@ -142,4 +142,17 @@ defmodule ExAws.RekognitionTest do
               "ModerationModelVersion" => _
             }} = ExAws.Rekognition.detect_moderation_labels(image_binary) |> ExAws.request()
   end
+
+  test "create face_liveness_session" do
+    assert {:ok,
+            %{}
+    } = ExAws.Rekognition.create_face_liveness_session() |> ExAws.request()
+  end
+
+  test "get face_liveness_session_results" do
+    assert {:ok,
+            %{
+              "SessionId" => _
+            }} = ExAws.Rekognition.get_face_liveness_session_results() |> ExAws.request()
+  end
 end
